@@ -7,3 +7,7 @@ This is a work-in-progress Chrome extension that will allow you to read EPUB fil
 * Allows you to upload your own EPUB files
 * Light and dark themes
 * Completely open source and free
+
+![Reader in use](./images/image3.png)
+
+![Project Gutenberg integration](./images/image4.png)

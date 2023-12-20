@@ -1,0 +1,173 @@
+body {
+	background: rgb(30, 30, 30);
+}
+
+.libraryElemContainer {
+	background: rgb(60, 60, 60);
+	border: 1px solid rgb(90, 90, 90);
+	color: rgb(230, 230, 230);
+}
+
+.libraryElemContainer:hover {
+	background: rgb(70, 70, 70);
+}
+
+.libraryHeading {
+	color: white;
+}
+
+.libraryControls button {
+	color: white;
+	background: rgb(50, 50, 50);
+	border: 1px solid rgb(70, 70, 70);
+}
+
+.libraryControls button:hover:not(:disabled) {
+	background: rgb(60, 60, 60);
+}
+
+.libraryControls button:disabled {
+	background: rgb(70, 70, 70);
+}
+
+.libraryControls button img {
+	filter: invert(0.9);
+}
+
+.libraryDownloadImage {
+	filter: invert(0.9);
+}
+
+.libraryTotal {
+	color: rgb(200, 200, 200);
+}
+
+#addBookImage {
+	filter: invert(0.8);
+}
+
+#reader {
+	color: rgb(240, 240, 240) !important;
+}
+
+.libraryElemProgress > div {
+	background: rgb(240, 240, 240);
+}
+
+#readerOverlay {
+	color: rgb(150, 150, 150);
+}
+
+#readerOverlayTop, #readerOverlayBottom {
+	background: rgb(40, 40, 40);
+}
+
+#readerOverlayTop {
+	border-bottom: 1px solid rgb(80, 80, 80);
+}
+
+#readerOverlayBottom {
+	border-top: 1px solid rgb(80, 80, 80);
+}
+
+.overlayButton {
+	background: rgb(40, 40, 40);
+	border: 1px solid rgb(80, 80, 80);
+	color: rgb(230, 230, 230);
+}
+
+.overlayButton:hover {
+	background: rgb(50, 50, 50);
+}
+
+.overlayButton img {
+	filter: invert(0.5);
+}
+
+.libraryElemInfo, .libraryElemDelete {
+	filter: invert(0.8);
+}
+
+#infoBox {
+	background: rgb(40, 40, 40);
+	border: 1px solid rgb(80, 80, 80);
+	color: rgb(230, 230, 230);
+}
+
+.infoBoxItem {
+	border-bottom: 1px solid rgb(80, 80, 80);
+}
+
+.infoBoxItem:hover {
+	background: rgb(50, 50, 50);
+}
+
+#infoBox img {
+	filter: invert(0.8);
+}
+
+#overlayProgress {
+	background: rgb(50, 50, 50);
+}
+
+#overlayProgress > div {
+	background: rgb(150, 150, 150);
+}
+
+#loadingAnimation:after {
+	border: 6px solid #fff;
+	border-color: #fff transparent #fff transparent;
+}
+
+.chapterMarker {
+	border-right: 1px solid rgb(200, 200, 200);
+}
+
+#overlayTooltip {
+	background: rgb(40, 40, 40);
+	border: 1px solid rgb(80, 80, 80);
+	color: rgb(230, 230, 230);
+}
+
+#deleteButtons > * {
+	background: rgb(40, 40, 40);
+	border: none;
+	border-top: 1px solid rgb(80, 80, 80);
+	color: rgb(230, 230, 230);
+	transition: 0.2s;
+}
+
+#deleteButtons > *:hover {
+	background: rgb(50, 50, 50);
+}
+
+#deleteBookButton {
+	border-right: 1px solid rgb(80, 80, 80);
+}
+
+.settingsItem > div > div {
+	background: rgb(50, 50, 50);
+	border: 1px solid rgb(60, 60, 60);
+}
+
+#libraryToolbar {
+	background: rgb(40, 40, 40);
+	border-top: 1px solid rgb(80, 80, 80);
+	color: white;
+}
+
+.libraryToolbarSection {
+	border-right: 1px solid rgb(80, 80, 80);
+}
+
+.ltsActive {
+	background: rgb(55, 55, 55);
+}
+
+.libraryToolbarSection:hover:not(.ltsActive) {
+	background: rgb(50, 50, 50);
+}
+
+.libraryToolbarSection img {
+	filter: invert(0.8);
+}

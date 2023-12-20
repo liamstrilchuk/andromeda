@@ -1,0 +1,570 @@
+html {
+	height: 100%;
+}
+
+html, body, #container, #library, #reader, #pageContainer {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+	font-family: Arial, Helvetica, sans-serif;
+}
+
+#container:has(> #reader) {
+	position: absolute;
+	height: 100%;
+	display: flex;
+	justify-content: center;
+	width: 100%;
+}
+
+body {
+	overflow-x: hidden;
+	position: relative;
+	min-height: 100%;
+}
+
+#libraryContainer {
+	padding: 40px;
+}
+
+.library {
+	display: flex;
+	height: min-content;
+	position: relative;
+	left: 0;
+	padding: 0 40px 0 0;
+	width: 100%;
+	scrollbar-width: none;
+	width: min-content;
+}
+
+.libraryControls {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	user-select: none;
+}
+
+.libraryControlsRight {
+	display: flex;
+}
+
+.libraryControls button {
+	padding: 0;
+	width: 35px;
+	height: 35px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	margin: 4px;
+	border-radius: 4px;
+	outline: none;
+	cursor: pointer;
+	transition: 0.1s;
+}
+
+.libraryControls button:disabled, .libraryControls button:disabled img {
+	cursor: not-allowed;
+}
+
+.librarySort, .libraryAdd {
+	width: max-content !important;
+	padding: 0 10px !important;
+	justify-content: space-evenly !important;
+}
+
+label[for="fileInput"] {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	cursor: pointer;
+}
+
+.librarySort img, .libraryAdd img {
+	margin-right: 3px;
+}
+
+.libraryControls button img {
+	width: 20px;
+	cursor: pointer;
+}
+
+.libraryForward img {
+	transform: rotate(180deg);
+}
+
+.library::-webkit-scrollbar {
+	display: none;
+}
+
+.libraryHeading {
+	margin: 0 0 10px 10px;
+	font-size: 3em;
+	white-space: nowrap;
+}
+
+.libraryElemContainer {
+	margin: 10px;
+	height: min-content;
+	border-radius: 5px;
+	transition: 0.2s;
+	cursor: pointer;
+	position: relative;
+	user-select: none;
+	padding: 3px;
+}
+
+.libraryElemContainer > img {
+	transition: 0.2s;
+	width: 195px;
+	height: 292px;
+}
+
+.libraryElemContainer > img {
+	filter: brightness(0.7);
+}
+
+.libraryElemContainer:hover > img {
+	filter: brightness(1);
+}
+
+.libraryElem {
+	width: 175px;
+	height: 90px;
+	display: flex;
+	flex-flow: column wrap;
+	justify-content: center;
+	align-items: center;
+	padding: 10px;
+	border-bottom-left-radius: 5px;
+	border-bottom-right-radius: 5px;
+	border-top: none !important;
+	position: relative;
+}
+
+.libraryElemTitle {
+	font-size: 1.5em;
+	font-weight: bold;
+	white-space: nowrap;
+	overflow: hidden;
+	max-width: 100%;
+}
+
+.libraryElemSubtitle {
+	margin-top: 2px;
+	font-size: 1.1em;
+	white-space: nowrap;
+	overflow: hidden;
+	width: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.libraryTotal {
+	font-size: 1.1em;
+	user-select: none;
+	position: absolute;
+	width: 100%;
+	height: 50px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	top: calc(100% - 50px);
+}
+
+.libraryTotal a {
+	color: inherit;
+}
+
+.libraryElemProgress {
+	position: absolute;
+	height: 5px;
+	top: calc(100% - 5px);
+	left: 0;
+	width: 100%;
+}
+
+.libraryElemProgress > div {
+	border-bottom-left-radius: 5px;
+	height: 100%;
+}
+
+.libraryElemDelete, .libraryElemInfo {
+	width: 20px;
+	position: absolute;
+	opacity: 0;
+	transition: 0.2s;
+	cursor: pointer;
+	top: 5px;
+}
+
+.libraryDownloadImage {
+	width: 15px;
+	height: 15px;
+}
+
+.libraryElemContainer:hover .libraryElemDelete, .libraryElemContainer:hover .libraryElemInfo {
+	opacity: 1;
+}
+
+.libraryElemDelete {
+	right: 5px;
+}
+
+.libraryElemInfo {
+	right: 30px;
+}
+
+#libraryToolbar {
+	position: fixed;
+	bottom: 0;
+	left: 0;
+	width: 100%;
+	height: 50px;
+	display: flex;
+	justify-content: space-evenly;
+	align-items: center;
+	z-index: 50;
+}
+
+.libraryToolbarSection {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+	font-variant: small-caps;
+	width: 100%;
+	height: 100%;
+	font-size: 1.3em;
+	user-select: none;
+	cursor: pointer;
+	transition: 0.2s;
+}
+
+.libraryToolbarSection img {
+	width: 20px;
+	height: 20px;
+}
+
+#addBookImage {
+	height: 60px;
+}
+
+#pageContainer {
+	font-family: 'EB Garamond', serif;
+	column-count: 2;
+	column-gap: 100px;
+	column-fill: auto;
+	position: relative;
+	top: 0;
+	left: 0;
+	transition: left 0.3s;
+	height: 100%;
+}
+
+#pageContainer img, #pageContainer image {
+	max-height: calc(100vh - 200px) !important;
+	max-width: 100% !important;
+}
+
+#reader {
+	overflow: hidden;
+}
+
+#reader h1 {
+	font-family: Arial, Helvetica, sans-serif;
+}
+
+#reader p {
+	text-indent: 40px;
+	margin: 0;
+	text-align: justify;
+	text-decoration: none !important;
+}
+
+#reader a {
+	color: inherit !important;
+}
+
+#container::-webkit-scrollbar {
+	display: none;
+}
+
+#container {
+	scrollbar-width: none;
+}
+
+#readerOverlay {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+}
+
+#readerOverlayBottom, #readerOverlaySmall {
+	top: calc(100% - 50px);
+}
+
+#readerOverlayTop, #readerOverlayBottom, #readerOverlaySmall {
+	position: fixed;
+	left: 0;
+	width: 100%;
+	height: 50px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	user-select: none;
+}
+
+#readerOverlayTop, #readerOverlayBottom {
+	opacity: 0;
+	transition: 0.3s;
+	z-index: 1;
+	font-size: 1.2em;
+	padding: 0 20px;
+}
+
+#readerOverlayTop {
+	justify-content: space-between;
+	box-sizing: border-box;
+}
+
+#readerOverlayTop > * {
+	width: 33%;
+}
+
+#readerOverlayTopText {
+	text-align: center;
+}
+
+.overlayButton {
+	cursor: pointer;
+	font-size: 1em;
+	border-radius: 5px;
+	width: 30px;
+	height: 30px;
+	transition: 0.2s;
+	position: relative;
+}
+
+.overlayButton img {
+	height: 70%;
+	position: absolute;
+	top: 4px;
+	left: 3px;
+}
+
+button:hover {
+	outline: none !important;
+}
+
+.icon {
+	font-size: 1.2em;
+}
+
+#infoBoxContainer {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	z-index: 2;
+	backdrop-filter: blur(2px) brightness(0.7);
+}
+
+#infoBox {
+	width: 400px;
+	border-radius: 5px;
+	font-size: 1.2em;
+	user-select: none;
+	max-height: 75%;
+	overflow: auto;
+}
+
+.infoBoxItem {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	height: 40px;
+	padding: 0 10px;
+	cursor: pointer;
+}
+
+.infoBoxItemTitle {
+	font-weight: bold;
+}
+
+#infoBox img {
+	width: 18px;
+}
+
+#readerOverlayTopRight {
+	text-align: right;
+}
+
+#overlayProgress {
+	width: 800px;
+	max-width: 80%;
+	height: 6px;
+	border-radius: 3px;
+	position: relative;
+}
+
+#overlayProgress > #progressMarker {
+	height: 100%;
+	border-radius: 3px;
+	transition: 0.3s;
+}
+
+#readerLoading {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	display: none;
+	justify-content: center;
+	align-items: center;
+	z-index: 2;
+}
+
+#loadingAnimation {
+	display: inline-block;
+	width: 80px;
+	height: 80px;
+}
+
+#loadingAnimation:after {
+	content: " ";
+	display: block;
+	width: 64px;
+	height: 64px;
+	margin: 8px;
+	border-radius: 50%;
+	animation: loading-animation 1.2s linear infinite;
+}
+
+.chapterMarker {
+	top: 0;
+	position: absolute;
+	height: 100%;
+}
+
+#overlayTooltip {
+	position: fixed;
+	top: calc(100% - 100px);
+	left: 0;
+	width: 100px;
+	height: 40px;
+	opacity: 0;
+	transition: 0.3s;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	z-index: 3;
+	padding: 5px;
+	border-radius: 5px;
+	text-align: center;
+	user-select: none;
+}
+
+#deleteText {
+	padding: 20px;
+}
+
+#deleteButtons {
+	display: flex;
+}
+
+#deleteButtons > * {
+	width: 50%;
+	padding: 10px;
+	background: none;
+	cursor: pointer;
+}
+
+@keyframes loading-animation {
+	0% {
+		transform: rotate(0deg);
+	}
+	100% {
+		transform: rotate(360deg);
+	}
+}
+
+.settingsItem {
+	padding: 10px;
+}
+
+.settingsItem > div {
+	display: flex;
+	justify-content: space-evenly;
+	padding-top: 5px;
+}
+
+.settingsItem > div > div {
+	padding: 15px 10px;
+	cursor: pointer;
+	width: 100%;
+	text-align: center;
+}
+
+#libraryOverlay {
+	position: fixed;
+	display: flex;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	justify-content: center;
+	align-items: center;
+	display: none;
+	z-index: 100;
+	transition: 0.3s background;
+	background: rgba(0, 0, 0, 0);
+	user-select: none;
+}
+
+#libraryOverlayProgress {
+	width: 75%;
+	max-width: 800px;
+	height: 20px;
+	border: 2px solid white;
+	border-radius: 7px;
+	position: relative;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+#libraryOverlayText {
+	font-size: 1.1em;
+	text-align: center;
+	position: relative;
+	z-index: 101;
+}
+
+#libraryOverlayProgressBar {
+	position: absolute;
+	left: 0;
+	height: 100%;
+	border-radius: 7px;
+	transition: 0.3s;
+	width: 0%;
+	background: rgb(230, 230, 230);
+}
+
+#circleProgressBarContainer {
+	width: 150px;
+	height: 150px;
+}
+
+@media screen and (max-width: 600px) {
+	.libraryToolbarSection span {
+		display: none;
+	}
+}

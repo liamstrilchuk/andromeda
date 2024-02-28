@@ -1,12 +1,21 @@
-html {
+* {
+	box-sizing: border-box;
+}
+
+body {
+	font-size: 100%;
+	font-family: system-ui, sans-serif;
+}
+
+html, body, #container {
 	height: 100%;
+	color: white;
 }
 
 html, body, #container, #library, #reader, #pageContainer {
 	margin: 0;
 	padding: 0;
 	box-sizing: border-box;
-	font-family: Arial, Helvetica, sans-serif;
 }
 
 #container:has(> #reader) {
@@ -23,232 +32,237 @@ body {
 	min-height: 100%;
 }
 
-#libraryContainer {
-	padding: 40px;
+.libraryImage {
+	width: 10% !important;
+	max-width: 100px;
+	padding: 0 !important;
 }
 
-.library {
+.libraryImage img {
+	width: 65px;
+	height: 97px;
+	position: relative;
+	z-index: 2;
+	transition: 0.3s;
+	border-top-left-radius: 5px;
+	border-top-right-radius: 0;
+	border-bottom-right-radius: 0;
+	border-bottom-left-radius: 0;
+}
+
+.libraryImage img:hover {
+	transform: scale(1.4);
+	z-index: 3;
+	border-top-right-radius: 5px;
+	border-bottom-right-radius: 5px;
+	border-bottom-left-radius: 5px;
+}
+
+.libraryTitle {
+	width: calc(30%);
+}
+
+.libraryAuthor, .libraryOpened {
+	width: 20%;
+}
+
+.librarySize, .libraryProgress {
+	width: 10%;
+}
+
+.libraryItem {
 	display: flex;
-	height: min-content;
+	transition: 0.3s;
+	background: rgb(50, 50, 50);
+	width: 100%;
+	min-width: 800px;
+	margin-top: 5px;
+	user-select: none;
+	cursor: pointer;
+	flex-wrap: wrap;
 	position: relative;
 	left: 0;
-	padding: 0 40px 0 0;
-	width: 100%;
-	scrollbar-width: none;
-	width: min-content;
-}
-
-.libraryControls {
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-	user-select: none;
-}
-
-.libraryControlsRight {
-	display: flex;
-}
-
-.libraryControls button {
-	padding: 0;
-	width: 35px;
-	height: 35px;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	margin: 4px;
-	border-radius: 4px;
-	outline: none;
-	cursor: pointer;
-	transition: 0.1s;
-}
-
-.libraryControls button:disabled, .libraryControls button:disabled img {
-	cursor: not-allowed;
-}
-
-.librarySort, .libraryAdd {
-	width: max-content !important;
-	padding: 0 10px !important;
-	justify-content: space-evenly !important;
-}
-
-label[for="fileInput"] {
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	cursor: pointer;
-}
-
-.librarySort img, .libraryAdd img {
-	margin-right: 3px;
-}
-
-.libraryControls button img {
-	width: 20px;
-	cursor: pointer;
-}
-
-.libraryForward img {
-	transform: rotate(180deg);
-}
-
-.library::-webkit-scrollbar {
-	display: none;
-}
-
-.libraryHeading {
-	margin: 0 0 10px 10px;
-	font-size: 3em;
-	white-space: nowrap;
-}
-
-.libraryElemContainer {
-	margin: 10px;
-	height: min-content;
 	border-radius: 5px;
-	transition: 0.2s;
-	cursor: pointer;
-	position: relative;
-	user-select: none;
-	padding: 3px;
 }
 
-.libraryElemContainer > img {
-	transition: 0.2s;
-	width: 195px;
-	height: 292px;
+.libraryItem:not(.libraryHeader):hover {
+	background: rgb(60, 60, 60);
+	width: calc(100% + 20px);
+	left: -10px;
 }
 
-.libraryElemContainer > img {
-	filter: brightness(0.7);
-}
-
-.libraryElemContainer:hover > img {
-	filter: brightness(1);
-}
-
-.libraryElem {
-	width: 175px;
-	height: 90px;
+.libraryItem > div {
 	display: flex;
-	flex-flow: column wrap;
-	justify-content: center;
 	align-items: center;
 	padding: 10px;
-	border-bottom-left-radius: 5px;
-	border-bottom-right-radius: 5px;
-	border-top: none !important;
+	flex-shrink: 0;
 	position: relative;
 }
 
-.libraryElemTitle {
-	font-size: 1.5em;
+.libraryItem > div > span {
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.libraryHeader {
+	background: rgb(40, 40, 40);
 	font-weight: bold;
-	white-space: nowrap;
-	overflow: hidden;
-	max-width: 100%;
 }
 
-.libraryElemSubtitle {
-	margin-top: 2px;
-	font-size: 1.1em;
-	white-space: nowrap;
-	overflow: hidden;
-	width: 100%;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-}
-
-.libraryTotal {
-	font-size: 1.1em;
-	user-select: none;
+.libraryProgressBar {
 	position: absolute;
 	width: 100%;
-	height: 50px;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	top: calc(100% - 50px);
-}
-
-.libraryTotal a {
-	color: inherit;
-}
-
-.libraryElemProgress {
-	position: absolute;
 	height: 5px;
 	top: calc(100% - 5px);
 	left: 0;
-	width: 100%;
-}
-
-.libraryElemProgress > div {
+	background: rgb(40, 40, 40);
+	flex-basis: 100%;
+	padding: 0 !important;
 	border-bottom-left-radius: 5px;
-	height: 100%;
+	border-bottom-right-radius: 5px;
 }
 
-.libraryElemDelete, .libraryElemInfo {
-	width: 20px;
+.libraryProgressBarInside {
+	height: 100%;
+	background: rgb(60, 100, 60);
+	transition: 0.3s;
+	border-bottom-left-radius: 5px;
+}
+
+.libraryItem:hover .libraryProgressBarInside {
+	background: rgb(80, 150, 80);
+}
+
+.librarySearchInput {
+	width: 400px;
+	height: 40px;
+	padding: 10px;
+	border: none;
+	border-radius: 5px;
+	margin-bottom: 10px;
+	outline: none !important;
+	font-size: 1em;
+	padding-left: 45px;
+	background: rgb(40, 40, 40);
+	transition: 0.3s;
+	color: white;
+}
+
+.librarySearchInput:focus {
+	background: rgb(50, 50, 50);
+}
+
+.librarySearchInputIcon {
 	position: absolute;
-	opacity: 0;
-	transition: 0.2s;
-	cursor: pointer;
-	top: 5px;
-}
-
-.libraryDownloadImage {
-	width: 15px;
-	height: 15px;
-}
-
-.libraryElemContainer:hover .libraryElemDelete, .libraryElemContainer:hover .libraryElemInfo {
-	opacity: 1;
-}
-
-.libraryElemDelete {
-	right: 5px;
-}
-
-.libraryElemInfo {
-	right: 30px;
-}
-
-#libraryToolbar {
-	position: fixed;
-	bottom: 0;
-	left: 0;
-	width: 100%;
-	height: 50px;
-	display: flex;
-	justify-content: space-evenly;
-	align-items: center;
-	z-index: 50;
-}
-
-.libraryToolbarSection {
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	flex-direction: column;
-	font-variant: small-caps;
-	width: 100%;
-	height: 100%;
-	font-size: 1.3em;
-	user-select: none;
-	cursor: pointer;
-	transition: 0.2s;
-}
-
-.libraryToolbarSection img {
+	left: 15px;
+	top: 10px;
 	width: 20px;
 	height: 20px;
+	filter: invert(0.8);
 }
 
-#addBookImage {
-	height: 60px;
+.librarySearchInputHolder {
+	position: relative;
+}
+
+.libraryControlsHolder {
+	display: flex;
+	justify-content: space-between;
+	min-width: 800px;
+}
+
+.libraryControlsSection {
+	display: flex;
+}
+
+.libraryControlsSection button {
+	height: 40px;
+	margin-left: 10px;
+	outline: none !important;
+	border: none;
+	border-radius: 5px;
+	background: rgb(45, 45, 45);
+	cursor: pointer;
+	color: #ddd;
+	font-size: 0.9em;
+	transition: 0.2s;
+	user-select: none;
+	padding: 0 20px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.librarySortIcon {
+	width: 16px;
+	height: 16px;
+	filter: invert(0.8);
+	margin-left: 5px;
+}
+
+.icontrue {
+	transform: rotate(180deg);
+}
+
+.libraryControlsSection button:hover {
+	background: rgb(50, 50, 50);
+}
+
+.mainHolder {
+	display: flex;
+	height: 100%;
+}
+
+.navigationBar {
+	width: 250px;
+	background: rgb(40, 40, 40);
+	flex-shrink: 0;
+	height: 100%;
+	padding: 15px;
+}
+
+.navigationBarItem {
+	padding: 10px;
+	margin-bottom: 10px;
+	cursor: pointer;
+	transition: 0.3s;
+	border-radius: 5px;
+	user-select: none;
+}
+
+.navigationBarItem:hover {
+	background: rgb(50, 50, 50);
+}
+
+.currentNavItem {
+	background: rgb(50, 50, 50);
+}
+
+.navigationBarTitle {
+	font-size: 1.5em;
+	font-weight: bold;
+	height: 70px;
+	display: flex;
+	align-items: center;
+	margin-left: 5px;
+	user-select: none;
+}
+
+.container {
+	padding: 30px;
+	width: 100%;
+}
+
+.buttonIconImage {
+	width: 20px;
+	height: 20px;
+	filter: invert(0.8);
+}
+
+.buttonIcon {
+	padding: 0 !important;
+	width: 40px;
 }
 
 #pageContainer {
@@ -511,51 +525,6 @@ button:hover {
 	cursor: pointer;
 	width: 100%;
 	text-align: center;
-}
-
-#libraryOverlay {
-	position: fixed;
-	display: flex;
-	top: 0;
-	left: 0;
-	width: 100%;
-	height: 100%;
-	justify-content: center;
-	align-items: center;
-	display: none;
-	z-index: 100;
-	transition: 0.3s background;
-	background: rgba(0, 0, 0, 0);
-	user-select: none;
-}
-
-#libraryOverlayProgress {
-	width: 75%;
-	max-width: 800px;
-	height: 20px;
-	border: 2px solid white;
-	border-radius: 7px;
-	position: relative;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-}
-
-#libraryOverlayText {
-	font-size: 1.1em;
-	text-align: center;
-	position: relative;
-	z-index: 101;
-}
-
-#libraryOverlayProgressBar {
-	position: absolute;
-	left: 0;
-	height: 100%;
-	border-radius: 7px;
-	transition: 0.3s;
-	width: 0%;
-	background: rgb(230, 230, 230);
 }
 
 #circleProgressBarContainer {

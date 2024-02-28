@@ -210,8 +210,9 @@ class Loader {
 		const chapterDoc = parser.parseFromString(chapter, "application/xhtml+xml");
 
 		const stylesheets = [...chapterDoc.querySelectorAll("link[rel=stylesheet]")]
-			.map(link => reader.util.getRelativePath(filename, link.getAttribute("href")))
-			.filter(href => href.endsWith(".css"));
+			.map(link => link.getAttribute("href"))
+			.filter(href => href && href.endsWith(".css"))
+			.map(href => reader.util.getRelativePath(filename, href));
 		
 		const body = chapterDoc.querySelector("body");
 		

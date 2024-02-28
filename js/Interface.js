@@ -2,55 +2,113 @@ class Interface {
 	constructor(container) {
 		this.container = container;
 		this.canClick = true;
+
+		this.librarySearchTerm = "";
+		this.libraryFormat = "list";
+		this.libraryFilter = "last-opened";
+		this.libraryDescending = true;
 	}
 
 	resetContainer() {
 		this.container.clear();
-
-		this.createToolbar();
 	}
 
 	async createLibrary() {
-		reader.util.setTitle("eBook Reader");
+		reader.util.setTitle("EPUB Library");
 		reader.renderer.close();
 
-		const library = await reader.store.loadLibrary();
-
 		this.resetContainer();
-		reader.util.loadElem("#toolbarLibrary").classList.add("ltsActive");
 
 		this.container.innerHTML += `
-			<div id="libraryContainer">
-				<div class="libraryControls">
-					<div class="libraryControlsLeft">
-						<h1 class="libraryHeading">My Library</h1>
-					</div>
-					<div class="libraryControlsRight">
-						<button class="librarySort"><img src="assets/sort.png">Last Opened</button>
-						<input style="display: none" type="file" accept=".epub" id="fileInput">
-						<button class="libraryAdd"><label for="fileInput"><img src="assets/plus.png">Add Book</label></button>
-						<button class="libraryBack"><img src="assets/back.png"></button>
-						<button class="libraryForward"><img src="assets/back.png"></button>
+			<input style="display: none" type="file" accept=".epub" id="fileInput">
+			<div class="mainHolder">
+				<div class="navigationBar">
+					<div class="navigationBarTitle">EPUB Library</div>
+					<div class="navigationBarItem currentNavItem">Your Library</div>
+					<div class="navigationBarItem">Project Gutenberg</div>
+					<div class="navigationBarItem">About</div>
+				</div>
+				<div class="container"></div>
+			</div>
+		`;
+
+		const container = reader.util.loadElem(".container");
+		container.innerHTML = `
+			<div class="libraryControlsHolder">
+				<div class="libraryControlsSection">
+					<div class="librarySearchInputHolder">
+						<img src="assets/browse.png" class="librarySearchInputIcon" draggable="false">
+						<input class="librarySearchInput" placeholder="Search for books...">
 					</div>
 				</div>
+				<div class="libraryControlsSection">
+					<button class="buttonIcon"><img src="assets/grid.png" class="buttonIconImage"></button>
+					<button id="addButton"><img src="assets/plus.png" class="buttonIconImage">&nbsp;&nbsp;Add book</button>
+				</div>
 			</div>
-			<div id="libraryOverlay">
-				<div id="libraryOverlayProgress">
-					<div id="libraryOverlayText"></div>
-					<div id="libraryOverlayProgressBar"></div>
+			<div class="libraryBooksHolder"></div>
+		`;
+
+		const searchInput = reader.util.loadElem(".librarySearchInput");
+		searchInput.addEventListener("input", () => {
+			this.librarySearchTerm = searchInput.value;
+			this.renderBooks();
+		});
+
+		await this.renderBooks();
+	}
+
+	async renderBooks() {
+		const container = reader.util.loadElem(".libraryBooksHolder");
+
+		container.innerHTML = `
+			<div class="libraryItem libraryHeader">
+				<div class="libraryImage"></div>
+				<div class="libraryTitle">Title
+					${this.libraryFilter === "title" ? `<img src="assets/up-arrow.png" class="librarySortIcon icon${this.libraryDescending}">` : ""}
+				</div>
+				<div class="libraryAuthor">Author
+					${this.libraryFilter === "author" ? `<img src="assets/up-arrow.png" class="librarySortIcon icon${this.libraryDescending}">` : ""}
+				</div>
+				<div class="librarySize">Size
+					${this.libraryFilter === "size" ? `<img src="assets/up-arrow.png" class="librarySortIcon icon${this.libraryDescending}">` : ""}
+				</div>
+				<div class="libraryProgress">Progress</div>
+				<div class="libraryOpened">Last Opened
+					${this.libraryFilter === "last-opened" ? `<img src="assets/up-arrow.png" class="librarySortIcon icon${this.libraryDescending}">` : ""}
 				</div>
 			</div>
 		`;
 
-		this.createToolbarEvents();
+		reader.util.loadElem(".libraryTitle").addEventListener("click", () => {
+			this.libraryDescending = this.libraryFilter === "title" ? !this.libraryDescending : true;
+			this.libraryFilter = "title";
+			this.renderBooks();
+		});
 
-		const libraryContainer = reader.util.loadElem("#libraryContainer");
+		reader.util.loadElem(".libraryAuthor").addEventListener("click", () => {
+			this.libraryDescending = this.libraryFilter === "author" ? !this.libraryDescending : true;
+			this.libraryFilter = "author";
+			this.renderBooks();
+		});
 
-		const libraryElem = reader.util.createElement("div", libraryContainer, "library");
-		this.dragToScrollHandler(libraryElem);
+		reader.util.loadElem(".librarySize").addEventListener("click", () => {
+			this.libraryDescending = this.libraryFilter === "size" ? !this.libraryDescending : true;
+			this.libraryFilter = "size";
+			this.renderBooks();
+		});
+
+		reader.util.loadElem(".libraryOpened").addEventListener("click", () => {
+			this.libraryDescending = this.libraryFilter === "last-opened" ? !this.libraryDescending : true;
+			this.libraryFilter = "last-opened";
+			this.renderBooks();
+		});
+
+		const books = await reader.store.loadLibrary();
+		const library = this.sortBooks(this.filterBooks(books));
 
 		for (const item of library) {
-			const bookElem = reader.util.createElement("div", libraryElem, "libraryElemContainer").setAttributes({
+			const bookElem = reader.util.createElement("div", container, "libraryItem").setAttributes({
 				title: item.title
 			});
 
@@ -58,19 +116,21 @@ class Interface {
 			const percentage = position.percentage;
 
 			const author = item.attributes["Creator"] || "Unknown";
-			const year = new Date(item.attributes["Date"]).getUTCFullYear() || "";
 
-			bookElem.innerHTML = `
-				<img src="${item.cover}" draggable="false">
-				<div class="libraryElem">
-					<div class="libraryElemTitle">${item.title}</div>
-					<div class="libraryElemSubtitle">${author}${year ? ", " : ""}${year}</div>
-					<div class="libraryElemSubtitle">${this.getLength(item.size)}&nbsp;&bull;&nbsp;${Math.round(percentage)}% read</div>
-					<img src="assets/trash.png" class="libraryElemDelete" title="Delete from library" draggable="false">
-					<img src="assets/info.png" class="libraryElemInfo" title="Book information" draggable="false">
+			const lastOpened = item.lastOpened ? new Date(item.lastOpened)
+				.toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" }) : "&mdash;";
+
+			bookElem.innerHTML += `
+				<div class="libraryImage">
+					<img src="${item.cover}" draggable="false">
 				</div>
-				<div class="libraryElemProgress">
-					<div style="width: ${percentage}%"></div>
+				<div class="libraryTitle"><span>${item.title}</span></div>
+				<div class="libraryAuthor"><span>${author}</span></div>
+				<div class="librarySize">${this.getLength(item.size)}</div>
+				<div class="libraryProgress">${Math.round(percentage)}%</div>
+				<div class="libraryOpened"><span>${lastOpened}</span></div>
+				<div class="libraryProgressBar">
+					<div class="libraryProgressBarInside" style="width: ${Math.round(percentage * 100) / 100}%;"></div>
 				</div>
 			`;
 
@@ -80,25 +140,51 @@ class Interface {
 				}
 			});
 
-			bookElem.querySelector(".libraryElemInfo").addEventListener("click", event => {
-				event.stopPropagation();
-				this.openInfoBox(item.title);
-			});
+			// bookElem.querySelector(".libraryElemInfo").addEventListener("click", event => {
+			// 	event.stopPropagation();
+			// 	this.openInfoBox(item.title);
+			// });
 
-			bookElem.querySelector(".libraryElemDelete").addEventListener("click", event => {
-				event.stopPropagation();
-				this.openDeleteDialog(item.title);
-			});
+			// bookElem.querySelector(".libraryElemDelete").addEventListener("click", event => {
+			// 	event.stopPropagation();
+			// 	this.openDeleteDialog(item.title);
+			// });
 		}
 
-		const total = library.reduce((acc, item) => acc + JSON.stringify(item).length, 0);
-		const totalElem = reader.util.createElement("div", this.container, "libraryTotal");
-		totalElem.innerHTML = `
-			Total of ${library.length} books, using ${this.getLength(total)} of storage&nbsp;&bull;&nbsp;
-			<a href="https://github.com/gullyn" target="_blank">GitHub</a>
-		`;
-
+		const fileInput = reader.util.loadElem("#fileInput");
 		fileInput.addEventListener("change", () => this.addBook(fileInput));
+
+		const addButton = reader.util.loadElem("#addButton");
+		addButton.addEventListener("click", () => fileInput.click());
+	}
+
+	filterBooks(books) {
+		const searchTerm = this.librarySearchTerm.toLowerCase();
+		return books.filter(book => book.title.toLowerCase().includes(searchTerm));
+	}
+
+	sortBooks(books) {
+		switch (this.libraryFilter) {
+			case "last-opened":
+				books.sort((a, b) => this.libraryDescending ? b.lastOpened - a.lastOpened : a.lastOpened - b.lastOpened);
+				break;
+			case "title":
+				books.sort((a, b) => this.libraryDescending ? b.title.localeCompare(a.title) : a.title.localeCompare(b.title));
+				break;
+			case "author":
+				books.sort((a, b) => {
+					const authorA = a.attributes["Creator"] || "Unknown";
+					const authorB = b.attributes["Creator"] || "Unknown";
+					return this.libraryDescending ? authorB.localeCompare(authorA) : authorA.localeCompare(authorB);
+				});
+				break;
+			case "size":
+				books.sort((a, b) => this.libraryDescending ? b.size - a.size : a.size - b.size);
+				break;
+		}
+
+
+		return books;
 	}
 
 	async createGutenberg() {
@@ -108,8 +194,6 @@ class Interface {
 		this.container.innerHTML += `
 			<div id="libraryContainer"></div>
 		`;
-
-		this.createToolbarEvents();
 
 		const libraryContainer = reader.util.loadElem("#libraryContainer");
 
@@ -164,8 +248,6 @@ class Interface {
 			<div id="libraryContainer"></div>
 		`;
 
-		this.createToolbarEvents();
-
 		const libraryContainer = reader.util.loadElem("#libraryContainer");
 		const data = await reader.store.getReadingStats();
 
@@ -185,35 +267,6 @@ class Interface {
 			trailColor: "#666",
 			trailWidth: 12
 		}).animate(Math.min(current / data.goal, 1));
-	}
-
-	createToolbar() {
-		this.container.innerHTML += `
-			<div id="libraryToolbar">
-				<div class="libraryToolbarSection" id="toolbarLibrary">
-					<img src="assets/library.png" draggable="false">
-					<span>library</span>
-				</div>
-				<div class="libraryToolbarSection" id="toolbarBrowse">
-					<img src="assets/browse.png" draggable="false">
-					<span>browse</span>
-				</div>
-				<div class="libraryToolbarSection" id="toolbarBookmarks">
-					<img src="assets/bookmarks.png" draggable="false">
-					<span>bookmarks</span>
-				</div>
-				<div class="libraryToolbarSection" id="toolbarReadingGoals">
-					<img src="assets/readinggoals.png" draggable="false">
-					<span>reading goals</span>
-				</div>
-			</div>
-		`;
-	}
-
-	createToolbarEvents() {
-		reader.util.loadElem("#toolbarLibrary").addEventListener("click", this.createLibrary.bind(this));
-		reader.util.loadElem("#toolbarBrowse").addEventListener("click", this.createGutenberg.bind(this));
-		reader.util.loadElem("#toolbarReadingGoals").addEventListener("click", this.createReadingGoals.bind(this));
 	}
 
 	createReader() {
@@ -536,17 +589,17 @@ class Interface {
 	}
 
 	changeOverlayState(text, percentage) {
-		reader.util.loadElem("#libraryOverlay").applyStyles({
-			background: "rgba(0, 0, 0, 0.4)",
-			display: "flex"
-		});
+		// reader.util.loadElem("#libraryOverlay").applyStyles({
+		// 	background: "rgba(0, 0, 0, 0.4)",
+		// 	display: "flex"
+		// });
 
-		if (text) {
-			reader.util.loadElem("#libraryOverlayText").innerHTML = text;
-		}
+		// if (text) {
+		// 	reader.util.loadElem("#libraryOverlayText").innerHTML = text;
+		// }
 
-		if (percentage) {
-			reader.util.loadElem("#libraryOverlayProgressBar").style.width = `${percentage}%`;
-		}
+		// if (percentage) {
+		// 	reader.util.loadElem("#libraryOverlayProgressBar").style.width = `${percentage}%`;
+		// }
 	}
 }

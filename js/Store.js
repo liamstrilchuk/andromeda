@@ -7,10 +7,6 @@ const defaultSettings = {
 };
 
 class Store {
-	constructor() {
-		this.initializeStore();
-	}
-
 	async loadSetting(setting) {
 		const settings = await this.get("settings");
 
@@ -32,6 +28,15 @@ class Store {
 	async loadBook(title) {
 		const book = await this.get("library-" + title.replaceAll(/[^\w]/g, ""));
 
+		const library = await this.get("library");
+		for (const item of library) {
+			if (item.title === title) {
+				item.lastOpened = Date.now();
+				break;
+			}
+		}
+		this.set("library", library);
+
 		return book;
 	}
 
@@ -42,7 +47,8 @@ class Store {
 			title: book.title,
 			size: book.size,
 			cover: book.cover,
-			attributes: book.attributes
+			attributes: book.attributes,
+			lastOpened: Date.now()
 		});
 
 		await this.set("library", library);

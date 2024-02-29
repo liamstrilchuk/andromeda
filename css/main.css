@@ -42,20 +42,7 @@ body {
 	width: 65px;
 	height: 97px;
 	position: relative;
-	z-index: 2;
-	transition: 0.3s;
 	border-top-left-radius: 5px;
-	border-top-right-radius: 0;
-	border-bottom-right-radius: 0;
-	border-bottom-left-radius: 0;
-}
-
-.libraryImage img:hover {
-	transform: scale(1.4);
-	z-index: 3;
-	border-top-right-radius: 5px;
-	border-bottom-right-radius: 5px;
-	border-bottom-left-radius: 5px;
 }
 
 .libraryTitle {
@@ -87,7 +74,6 @@ body {
 
 .libraryItem:not(.libraryHeader):hover {
 	background: rgb(60, 60, 60);
-	width: calc(100% + 20px);
 	left: -10px;
 }
 
@@ -226,6 +212,7 @@ body {
 
 .libraryGridItem:hover {
 	background: rgb(60, 60, 60);
+	transform: scale(1.05);
 }
 
 .libraryGridTitle, .libraryGridAuthor, .libraryGridProgress {

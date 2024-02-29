@@ -1,36 +1,40 @@
 class Interface {
 	constructor(container) {
 		this.container = container;
-		this.canClick = true;
 
 		this.librarySearchTerm = "";
 		this.libraryFormat = "list";
 		this.libraryFilter = "last-opened";
 		this.libraryDescending = true;
+
+		this.currentView = "library";
 	}
 
 	resetContainer() {
 		this.container.clear();
-	}
-
-	async createLibrary() {
-		reader.util.setTitle("EPUB Library");
-		reader.renderer.close();
-
-		this.resetContainer();
-
-		this.container.innerHTML += `
+		this.container.innerHTML = `
 			<input style="display: none" type="file" accept=".epub" id="fileInput">
 			<div class="mainHolder">
 				<div class="navigationBar">
 					<div class="navigationBarTitle">EPUB Library</div>
-					<div class="navigationBarItem currentNavItem">Your Library</div>
-					<div class="navigationBarItem">Project Gutenberg</div>
-					<div class="navigationBarItem">About</div>
+					<div class="navigationBarItem ${this.currentView === "library" ? "currentNavItem" : ""}" id="navLibrary">Your Library</div>
+					<div class="navigationBarItem ${this.currentView === "gutenberg" ? "currentNavItem" : ""}" id="navGutenberg">Project Gutenberg</div>
+					<div class="navigationBarItem ${this.currentView === "about" ? "currentNavItem" : ""}" id="navAbout">About</div>
 				</div>
 				<div class="container"></div>
 			</div>
 		`;
+
+		reader.util.loadElem("#navLibrary").addEventListener("click", () => this.createLibrary());
+		reader.util.loadElem("#navGutenberg").addEventListener("click", () => this.createGutenberg());
+	}
+
+	async createLibrary() {
+		this.currentView = "library";
+		reader.util.setTitle("EPUB Library");
+		reader.renderer.close();
+
+		this.resetContainer();
 
 		const container = reader.util.loadElem(".container");
 		container.innerHTML = `
@@ -42,7 +46,7 @@ class Interface {
 					</div>
 				</div>
 				<div class="libraryControlsSection">
-					<button class="buttonIcon"><img src="assets/grid.png" class="buttonIconImage"></button>
+					<button class="buttonIcon" id="libraryLayoutButton"><img src="assets/${this.libraryFormat === "grid" ? "list" : "grid"}.png" class="buttonIconImage"></button>
 					<button id="addButton"><img src="assets/plus.png" class="buttonIconImage">&nbsp;&nbsp;Add book</button>
 				</div>
 			</div>
@@ -55,89 +59,116 @@ class Interface {
 			this.renderBooks();
 		});
 
+		reader.util.loadElem("#libraryLayoutButton").addEventListener("click", () => {
+			this.libraryFormat = this.libraryFormat === "list" ? "grid" : "list";
+			this.createLibrary();
+		});
+
 		await this.renderBooks();
 	}
 
 	async renderBooks() {
 		const container = reader.util.loadElem(".libraryBooksHolder");
 
-		container.innerHTML = `
-			<div class="libraryItem libraryHeader">
-				<div class="libraryImage"></div>
-				<div class="libraryTitle">Title
-					${this.libraryFilter === "title" ? `<img src="assets/up-arrow.png" class="librarySortIcon icon${this.libraryDescending}">` : ""}
+		if (this.libraryFormat === "list") {
+			container.innerHTML = `
+				<div class="libraryItem libraryHeader">
+					<div class="libraryImage"></div>
+					<div class="libraryTitle">Title
+						${this.libraryFilter === "title" ? `<img src="assets/up-arrow.png" class="librarySortIcon icon${this.libraryDescending}">` : ""}
+					</div>
+					<div class="libraryAuthor">Author
+						${this.libraryFilter === "author" ? `<img src="assets/up-arrow.png" class="librarySortIcon icon${this.libraryDescending}">` : ""}
+					</div>
+					<div class="librarySize">Size
+						${this.libraryFilter === "size" ? `<img src="assets/up-arrow.png" class="librarySortIcon icon${this.libraryDescending}">` : ""}
+					</div>
+					<div class="libraryProgress">Progress</div>
+					<div class="libraryOpened">Last Opened
+						${this.libraryFilter === "last-opened" ? `<img src="assets/up-arrow.png" class="librarySortIcon icon${this.libraryDescending}">` : ""}
+					</div>
 				</div>
-				<div class="libraryAuthor">Author
-					${this.libraryFilter === "author" ? `<img src="assets/up-arrow.png" class="librarySortIcon icon${this.libraryDescending}">` : ""}
-				</div>
-				<div class="librarySize">Size
-					${this.libraryFilter === "size" ? `<img src="assets/up-arrow.png" class="librarySortIcon icon${this.libraryDescending}">` : ""}
-				</div>
-				<div class="libraryProgress">Progress</div>
-				<div class="libraryOpened">Last Opened
-					${this.libraryFilter === "last-opened" ? `<img src="assets/up-arrow.png" class="librarySortIcon icon${this.libraryDescending}">` : ""}
-				</div>
-			</div>
-		`;
+			`;
 
-		reader.util.loadElem(".libraryTitle").addEventListener("click", () => {
-			this.libraryDescending = this.libraryFilter === "title" ? !this.libraryDescending : true;
-			this.libraryFilter = "title";
-			this.renderBooks();
-		});
+			reader.util.loadElem(".libraryTitle").addEventListener("click", () => {
+				this.libraryDescending = this.libraryFilter === "title" ? !this.libraryDescending : true;
+				this.libraryFilter = "title";
+				this.renderBooks();
+			});
 
-		reader.util.loadElem(".libraryAuthor").addEventListener("click", () => {
-			this.libraryDescending = this.libraryFilter === "author" ? !this.libraryDescending : true;
-			this.libraryFilter = "author";
-			this.renderBooks();
-		});
+			reader.util.loadElem(".libraryAuthor").addEventListener("click", () => {
+				this.libraryDescending = this.libraryFilter === "author" ? !this.libraryDescending : true;
+				this.libraryFilter = "author";
+				this.renderBooks();
+			});
 
-		reader.util.loadElem(".librarySize").addEventListener("click", () => {
-			this.libraryDescending = this.libraryFilter === "size" ? !this.libraryDescending : true;
-			this.libraryFilter = "size";
-			this.renderBooks();
-		});
+			reader.util.loadElem(".librarySize").addEventListener("click", () => {
+				this.libraryDescending = this.libraryFilter === "size" ? !this.libraryDescending : true;
+				this.libraryFilter = "size";
+				this.renderBooks();
+			});
 
-		reader.util.loadElem(".libraryOpened").addEventListener("click", () => {
-			this.libraryDescending = this.libraryFilter === "last-opened" ? !this.libraryDescending : true;
-			this.libraryFilter = "last-opened";
-			this.renderBooks();
-		});
+			reader.util.loadElem(".libraryOpened").addEventListener("click", () => {
+				this.libraryDescending = this.libraryFilter === "last-opened" ? !this.libraryDescending : true;
+				this.libraryFilter = "last-opened";
+				this.renderBooks();
+			});
+		} else {
+			container.innerHTML = ``;
+			container.classList.add("libraryGridBooksHolder");
+		}
 
 		const books = await reader.store.loadLibrary();
 		const library = this.sortBooks(this.filterBooks(books));
 
 		for (const item of library) {
-			const bookElem = reader.util.createElement("div", container, "libraryItem").setAttributes({
-				title: item.title
-			});
-
 			const position = await reader.store.loadPosition(item.title);
 			const percentage = position.percentage;
 
 			const author = item.attributes["Creator"] || "Unknown";
+			let bookElem;
 
-			const lastOpened = item.lastOpened ? new Date(item.lastOpened)
-				.toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" }) : "&mdash;";
+			if (this.libraryFormat === "list") {
+				bookElem = reader.util.createElement("div", container, "libraryItem").setAttributes({
+					title: item.title
+				});
 
-			bookElem.innerHTML += `
-				<div class="libraryImage">
-					<img src="${item.cover}" draggable="false">
-				</div>
-				<div class="libraryTitle"><span>${item.title}</span></div>
-				<div class="libraryAuthor"><span>${author}</span></div>
-				<div class="librarySize">${this.getLength(item.size)}</div>
-				<div class="libraryProgress">${Math.round(percentage)}%</div>
-				<div class="libraryOpened"><span>${lastOpened}</span></div>
-				<div class="libraryProgressBar">
-					<div class="libraryProgressBarInside" style="width: ${Math.round(percentage * 100) / 100}%;"></div>
-				</div>
-			`;
+				const lastOpened = item.lastOpened ? new Date(item.lastOpened)
+					.toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" }) : "&mdash;";
+
+				bookElem.innerHTML += `
+					<div class="libraryImage">
+						<img src="${item.cover}" draggable="false">
+					</div>
+					<div class="libraryTitle"><span>${item.title}</span></div>
+					<div class="libraryAuthor"><span>${author}</span></div>
+					<div class="librarySize">${this.getLength(item.size)}</div>
+					<div class="libraryProgress">${Math.round(percentage)}%</div>
+					<div class="libraryOpened"><span>${lastOpened}</span></div>
+					<div class="libraryProgressBar">
+						<div class="libraryProgressBarInside" style="width: ${Math.round(percentage * 100) / 100}%;"></div>
+					</div>
+				`;
+			} else {
+				bookElem = reader.util.createElement("div", container, "libraryGridItem").setAttributes({
+					title: item.title
+				});
+
+				bookElem.innerHTML += `
+					<div class="libraryGridImage">
+						<img src="${item.cover}" draggable="false">
+					</div>
+					<div class="libraryGridTitle"><span>${item.title}</span></div>
+					<div class="libraryGridAuthor"><span>${author}</span></div>
+					<div class="libraryGridProgress"><span>${Math.round(percentage)}% complete</span></div>
+					<div class="libraryProgressBar">
+						<div class="libraryProgressBarInside" style="width: ${Math.round(percentage * 100) / 100}%;"></div>
+					</div>
+				`;
+			}
 
 			bookElem.addEventListener("click", () => {
-				if (this.canClick) {
-					this.loadBook(bookElem.title);
-				}
+				this.loadBook(bookElem.title);
 			});
 
 			// bookElem.querySelector(".libraryElemInfo").addEventListener("click", event => {
@@ -183,90 +214,74 @@ class Interface {
 				break;
 		}
 
-
 		return books;
 	}
 
-	async createGutenberg() {
+	async createGutenberg(search="") {
+		this.currentView = "gutenberg";
 		this.resetContainer();
-		reader.util.loadElem("#toolbarBrowse").classList.add("ltsActive");
 
-		this.container.innerHTML += `
-			<div id="libraryContainer"></div>
+		const container = reader.util.loadElem(".container");
+
+		container.innerHTML = `
+			<div class="libraryControlsHolder">
+				<div class="libraryControlsSection">
+					<div class="librarySearchInputHolder">
+						<img src="assets/browse.png" class="librarySearchInputIcon" draggable="false">
+						<input class="librarySearchInput" placeholder="Search for title or author..." value="${search}">
+					</div>
+					<button id="gutenbergSearchButton">Search</button>
+				</div>
+				<div class="libraryControlsSection">
+					<button class="buttonIcon"><img src="assets/grid.png" class="buttonIconImage"></button>
+				</div>
+			</div>
+			<div class="libraryBooksHolder"></div>
 		`;
 
-		const libraryContainer = reader.util.loadElem("#libraryContainer");
+		const searchButton = reader.util.loadElem("#gutenbergSearchButton");
+		const searchInput = reader.util.loadElem(".librarySearchInput");
 
-		const gutenbergControls = reader.util.createElement("div", libraryContainer, "libraryControls")
-			.setAttributes({ id: "libraryDiscover" });
+		searchButton.addEventListener("click", () => this.createGutenberg(searchInput.value));
 
-		gutenbergControls.innerHTML = `
-			<div class="libraryControlsLeft">
-				<h1 class="libraryHeading">Discover Project Gutenberg</h1>
-			</div>
-			<div class="libraryControlsRight">
-				<button class="librarySort"><img src="assets/sort.png">Most Downloaded</button>
-				<button class="libraryBack"><img src="assets/back.png"></button>
-				<button class="libraryForward"><img src="assets/back.png"></button>
+		const booksHolder = reader.util.loadElem(".libraryBooksHolder");
+		booksHolder.innerHTML = `
+			<div class="libraryItem libraryHeader">
+				<div class="libraryImage"></div>
+				<div class="libraryTitle">Title
+					${this.libraryFilter === "title" ? `<img src="assets/up-arrow.png" class="librarySortIcon icon${this.libraryDescending}">` : ""}
+				</div>
+				<div class="libraryAuthor">Author
+					${this.libraryFilter === "author" ? `<img src="assets/up-arrow.png" class="librarySortIcon icon${this.libraryDescending}">` : ""}
+				</div>
+				<div class="librarySize">Downloads
+					${this.libraryFilter === "size" ? `<img src="assets/up-arrow.png" class="librarySortIcon icon${this.libraryDescending}">` : ""}
+				</div>
 			</div>
 		`;
 
-		const gutenburgLibrary = reader.util.createElement("div", libraryContainer, "library");
-		this.dragToScrollHandler(gutenburgLibrary);
-
-		const gutenberg = await reader.gutenberg.loadBooks();
+		const gutenberg = await reader.gutenberg.loadBooks("popular", search);
 
 		for (const item of gutenberg) {
-			const bookElem = reader.util.createElement("div", gutenburgLibrary, "libraryElemContainer").setAttributes({
+			const bookElem = reader.util.createElement("div", booksHolder, "libraryItem").setAttributes({
 				title: item.title
 			});
 
 			const author = item.author || "Unknown";
-			
-			bookElem.innerHTML = `
-				<img src="${item.cover}" draggable="false">
-				<div class="libraryElem">
-					<div class="libraryElemTitle">${item.title}</div>
-					<div class="libraryElemSubtitle">${author}</div>
-					<div class="libraryElemSubtitle"><img src="assets/download.png" class="libraryDownloadImage">&nbsp;${item.downloads}</div>
+
+			bookElem.innerHTML += `
+				<div class="libraryImage">
+					<img src="${item.cover}" draggable="false">
+				</div>
+				<div class="libraryTitle"><span>${item.title}</span></div>
+				<div class="libraryAuthor"><span>${author}</span></div>
+				<div class="librarySize">${item.downloads}</div>
+				<div class="librarySize"></div>
+				<div class="libraryOpened gutenbergDownloadHolder">
+					<a href="${item.url}" target="_blank"><button class="gutenbergDownload">Download</button></a>
 				</div>
 			`;
-
-			bookElem.onclick = () => {
-				if (this.canClick) {
-					window.open(item.url, "_blank");
-				}
-			}
 		}
-	}
-
-	async createReadingGoals() {
-		this.resetContainer();
-		reader.util.loadElem("#toolbarReadingGoals").classList.add("ltsActive");
-
-		this.container.innerHTML += `
-			<div id="libraryContainer"></div>
-		`;
-
-		const libraryContainer = reader.util.loadElem("#libraryContainer");
-		const data = await reader.store.getReadingStats();
-
-		libraryContainer.innerHTML += `
-			<div id="libraryReadingGoals">
-				<div id="circleProgressBarContainer"></div>
-			</div>
-		`;
-
-		const current = data.days[reader.util.getDateString(new Date())] || 0;
-
-		new ProgressBar.Circle("#circleProgressBarContainer", {
-			strokeWidth: 12,
-			easing: "easeInOut",
-			duration: 1000,
-			color: "#fc0",
-			trailColor: "#666",
-			trailWidth: 12
-		}).animate(Math.min(current / data.goal, 1));
 	}
 
 	createReader() {
@@ -311,75 +326,6 @@ class Interface {
 		reader.util.loadElem("#overlayButtonTOC").addEventListener("click", () => this.openTOCBox(reader.renderer.book.tableOfContents));
 
 		return { reader: readerElem, overlay: readerOverlay };
-	}
-
-	dragToScrollHandler(element) {
-		let dragging = false;
-		let lastX = 0;
-		let totalMoved = 0;
-		let prevButton, nextButton;
-
-		const mouseOff = (leftVal) => {
-			dragging = false;
-			totalMoved = 0;
-			window.setTimeout(() => { this.canClick = true }, 20);
-			let index = 0;
-
-			const currentLeft = typeof leftVal === "number" ? leftVal : (element.style.left ? Number(element.style.left.split("px")[0]) : 0);
-
-			const first = reader.util.loadAllElems(".libraryElemContainer", element)
-				.map(elem => [Math.abs(elem.offsetLeft + currentLeft), elem.offsetLeft, index++])
-				.sort((a, b) => a[0] - b[0]);
-
-			element.style.transition = "left 0.2s";
-			const newLeft = -first[0][1] + 50;
-			const chosenLeft = -Math.max(Math.min(-newLeft, element.scrollWidth - window.innerWidth), -50) - 40;
-
-			element.style.left = chosenLeft + "px";
-			window.setTimeout(() => element.style.transition = "", 200);
-
-			prevButton.disabled = chosenLeft > -50 && prevButton;
-			nextButton.disabled = -chosenLeft > element.scrollWidth - window.innerWidth && nextButton;
-		}
-
-
-		if (element.previousElementSibling.className === "libraryControls") {
-			prevButton = element.previousElementSibling.querySelector(".libraryBack");
-			nextButton = element.previousElementSibling.querySelector(".libraryForward");
-
-			prevButton.addEventListener("click", () => {
-				mouseOff(element.style.left ? Number(element.style.left.split("px")[0]) + 446 : 446);
-			});
-
-			nextButton.addEventListener("click", () => {
-				mouseOff(element.style.left ? Number(element.style.left.split("px")[0]) - 446 : -446);
-			});
-		}
-
-		element.addEventListener("mousedown", event => {
-			dragging = true;
-			lastX = event.clientX;
-		});
-
-		element.addEventListener("mousemove", event => {
-			if (dragging) {
-				const deltaX = event.clientX - lastX;
-				lastX = event.clientX;
-				totalMoved += Math.abs(deltaX);
-				if (totalMoved > 20) {
-					this.canClick = false;
-				}
-				const newLeft = element.style.left ? Number(element.style.left.split("px")[0]) + deltaX : deltaX;
-				element.style.left = -Math.max(Math.min(-newLeft, element.scrollWidth - window.innerWidth + 80), -50) + "px";
-			}
-		});
-
-		element.addEventListener("mouseup", mouseOff);
-		element.addEventListener("mouseleave", () => {
-			if (dragging) {
-				mouseOff();
-			}
-		});
 	}
 
 	loadTheme(theme) {

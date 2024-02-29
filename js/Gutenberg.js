@@ -12,7 +12,7 @@ class Gutenberg {
 	async loadBooks(sort, search) {
 		const response = await this.query({
 			sort: sort || "popular",
-			search: search || "",
+			search: encodeURIComponent(search) || "",
 			mime_type: "application/epub"
 		});
 		const books = [];

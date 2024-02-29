@@ -1,164 +1,23 @@
-body {
-	background: rgb(30, 30, 30);
+:root {
+	--background1: rgb(30, 30, 30);
+	--background2: rgb(40, 40, 40);
+	--background3: rgb(50, 50, 50);
+	--background4: rgb(60, 60, 60);
+	--background5: rgb(70, 70, 70);
+	--background6: rgb(80, 80, 80);
+
+	--text1: rgb(240, 240, 240);
+	--text2: rgb(230, 230, 230);
+	--text3: rgb(200, 200, 200);
+
+	--border1: rgb(200, 200, 200);
 }
 
-.libraryElemContainer {
-	background: rgb(60, 60, 60);
-	border: 1px solid rgb(90, 90, 90);
-	color: rgb(230, 230, 230);
-}
-
-.libraryElemContainer:hover {
-	background: rgb(70, 70, 70);
-}
-
-.libraryHeading {
-	color: white;
-}
-
-.libraryControls button {
-	color: white;
-	background: rgb(50, 50, 50);
-	border: 1px solid rgb(70, 70, 70);
-}
-
-.libraryControls button:hover:not(:disabled) {
-	background: rgb(60, 60, 60);
-}
-
-.libraryControls button:disabled {
-	background: rgb(70, 70, 70);
-}
-
-.libraryControls button img {
-	filter: invert(0.9);
-}
-
-.libraryDownloadImage {
-	filter: invert(0.9);
-}
-
-.libraryTotal {
-	color: rgb(200, 200, 200);
-}
-
-#addBookImage {
+.libraryElemInfo, .libraryElemDelete, .librarySearchInputIcon, .librarySortIcon, .buttonIconImage, #infoBox img, .overlayButton img {
 	filter: invert(0.8);
-}
-
-#reader {
-	color: rgb(240, 240, 240) !important;
-}
-
-.libraryElemProgress > div {
-	background: rgb(240, 240, 240);
-}
-
-#readerOverlay {
-	color: rgb(150, 150, 150);
-}
-
-#readerOverlayTop, #readerOverlayBottom {
-	background: rgb(40, 40, 40);
-}
-
-#readerOverlayTop {
-	border-bottom: 1px solid rgb(80, 80, 80);
-}
-
-#readerOverlayBottom {
-	border-top: 1px solid rgb(80, 80, 80);
-}
-
-.overlayButton {
-	background: rgb(40, 40, 40);
-	border: 1px solid rgb(80, 80, 80);
-	color: rgb(230, 230, 230);
-}
-
-.overlayButton:hover {
-	background: rgb(50, 50, 50);
-}
-
-.overlayButton img {
-	filter: invert(0.5);
-}
-
-.libraryElemInfo, .libraryElemDelete {
-	filter: invert(0.8);
-}
-
-#infoBox {
-	background: rgb(40, 40, 40);
-	border: 1px solid rgb(80, 80, 80);
-	color: rgb(230, 230, 230);
-}
-
-.infoBoxItem:hover {
-	background: rgb(50, 50, 50);
-}
-
-#infoBox img {
-	filter: invert(0.8);
-}
-
-#overlayProgress {
-	background: rgb(50, 50, 50);
-}
-
-#overlayProgress > div {
-	background: rgb(150, 150, 150);
 }
 
 #loadingAnimation:after {
 	border: 6px solid #fff;
 	border-color: #fff transparent #fff transparent;
-}
-
-.chapterMarker {
-	border-right: 1px solid rgb(200, 200, 200);
-}
-
-#overlayTooltip {
-	background: rgb(40, 40, 40);
-	border: 1px solid rgb(80, 80, 80);
-	color: rgb(230, 230, 230);
-}
-
-#deleteButtons > * {
-	background: rgb(50, 50, 50);
-	border: none;
-	color: rgb(230, 230, 230);
-	transition: 0.2s;
-}
-
-#deleteButtons > *:hover {
-	background: rgb(60, 60, 60);
-}
-
-.settingsItem > div > div {
-	background: rgb(50, 50, 50);
-	border: 1px solid rgb(60, 60, 60);
-}
-
-#libraryToolbar {
-	background: rgb(40, 40, 40);
-	border-top: 1px solid rgb(80, 80, 80);
-	color: white;
-}
-
-.libraryToolbarSection {
-	border-right: 1px solid rgb(80, 80, 80);
-}
-
-.ltsActive {
-	background: rgb(55, 55, 55);
-}
-
-.libraryToolbarSection:hover:not(.ltsActive) {
-	background: rgb(50, 50, 50);
-}
-
-.libraryToolbarSection img {
-	filter: invert(0.8);
 }

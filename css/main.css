@@ -5,11 +5,12 @@
 body {
 	font-size: 100%;
 	font-family: system-ui, sans-serif;
+	background: var(--background1);
 }
 
 html, body, #container {
 	height: 100%;
-	color: white;
+	color: var(--text1);
 }
 
 html, body, #container, #library, #reader, #pageContainer {
@@ -60,7 +61,7 @@ body {
 .libraryItem {
 	display: flex;
 	transition: 0.3s;
-	background: rgb(50, 50, 50);
+	background: var(--background3);
 	width: 100%;
 	min-width: 800px;
 	margin-top: 5px;
@@ -73,7 +74,7 @@ body {
 }
 
 .libraryItem:not(.libraryHeader):hover {
-	background: rgb(60, 60, 60);
+	background: var(--background4);
 	left: -10px;
 }
 
@@ -92,7 +93,7 @@ body {
 }
 
 .libraryHeader {
-	background: rgb(40, 40, 40);
+	background: var(--background2);
 	font-weight: bold;
 }
 
@@ -102,7 +103,7 @@ body {
 	height: 5px;
 	top: calc(100% - 5px);
 	left: 0;
-	background: rgb(40, 40, 40);
+	background: var(--background2);
 	flex-basis: 100%;
 	padding: 0 !important;
 	border-bottom-left-radius: 5px;
@@ -135,13 +136,13 @@ body {
 	outline: none !important;
 	font-size: 1em;
 	padding-left: 45px;
-	background: rgb(40, 40, 40);
+	background: var(--background2);
 	transition: 0.3s;
-	color: white;
+	color: var(--text1);
 }
 
 .librarySearchInput:focus {
-	background: rgb(50, 50, 50);
+	background: var(--background3);
 }
 
 .librarySearchInputIcon {
@@ -150,7 +151,6 @@ body {
 	top: 10px;
 	width: 20px;
 	height: 20px;
-	filter: invert(0.8);
 }
 
 .librarySearchInputHolder {
@@ -173,9 +173,9 @@ body {
 	outline: none !important;
 	border: none;
 	border-radius: 5px;
-	background: rgb(45, 45, 45);
+	background: var(--background2);
 	cursor: pointer;
-	color: #ddd;
+	color: var(--text2);
 	font-size: 0.9em;
 	transition: 0.2s;
 	user-select: none;
@@ -188,7 +188,6 @@ body {
 .librarySortIcon {
 	width: 16px;
 	height: 16px;
-	filter: invert(0.8);
 	margin-left: 5px;
 }
 
@@ -198,7 +197,7 @@ body {
 	height: 390px;
 	padding: 10px;
 	cursor: pointer;
-	background: rgb(50, 50, 50);
+	background: var(--background3);
 	margin: 10px;
 	border-radius: 5px;
 	position: relative;
@@ -212,7 +211,7 @@ body {
 }
 
 .libraryGridItem:hover {
-	background: rgb(60, 60, 60);
+	background: var(--background4);
 	transform: scale(1.05);
 }
 
@@ -236,13 +235,13 @@ body {
 }
 
 .libraryControlsSection button:hover {
-	background: rgb(50, 50, 50);
+	background: var(--background3);
 }
 
 .contextMenu {
 	position: fixed;
 	z-index: 3;
-	background: rgb(40, 40, 40);
+	background: var(--background2);
 	border-radius: 5px;
 	overflow: hidden;
 	padding: 5px 10px;
@@ -273,7 +272,7 @@ body {
 }
 
 .contextMenuItem:hover {
-	background: rgb(50, 50, 50);
+	background: var(--background3);
 }
 
 .contextMenuDelete:hover {
@@ -287,7 +286,7 @@ body {
 
 .navigationBar {
 	width: 250px;
-	background: rgb(40, 40, 40);
+	background: var(--background2);
 	flex-shrink: 0;
 	height: 100%;
 	padding: 15px;
@@ -303,11 +302,11 @@ body {
 }
 
 .navigationBarItem:hover {
-	background: rgb(50, 50, 50);
+	background: var(--background3);
 }
 
 .currentNavItem {
-	background: rgb(50, 50, 50);
+	background: var(--background3);
 }
 
 .navigationBarTitle {
@@ -329,7 +328,6 @@ body {
 .buttonIconImage {
 	width: 20px;
 	height: 20px;
-	filter: invert(0.8);
 }
 
 .buttonIcon {
@@ -356,6 +354,7 @@ body {
 
 #reader {
 	overflow: hidden;
+	color: var(--text1) !important;
 }
 
 #reader h1 {
@@ -386,6 +385,7 @@ body {
 	top: 0;
 	left: 0;
 	width: 100%;
+	color: var(--text3);
 }
 
 #readerOverlayBottom, #readerOverlaySmall {
@@ -409,6 +409,7 @@ body {
 	z-index: 1;
 	font-size: 1.2em;
 	padding: 0 20px;
+	background: var(--background2);
 }
 
 #readerOverlayTop {
@@ -422,23 +423,34 @@ body {
 
 #readerOverlayTopText {
 	text-align: center;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	font-size: 0.9em;
 }
 
 .overlayButton {
 	cursor: pointer;
 	font-size: 1em;
 	border-radius: 5px;
-	width: 30px;
-	height: 30px;
+	width: 36px;
+	height: 36px;
 	transition: 0.2s;
 	position: relative;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	background: var(--background2);
+	color: var(--text2);
+	border: none;
+}
+
+.overlayButton:hover {
+	background: var(--background3);
 }
 
 .overlayButton img {
-	height: 70%;
-	position: absolute;
-	top: 4px;
-	left: 3px;
+	width: 20px;
 }
 
 button:hover {
@@ -469,6 +481,9 @@ button:hover {
 	max-height: 75%;
 	overflow: auto;
 	padding: 10px;
+	background: var(--background2);
+	border: 1px solid var(--background6);
+	color: var(--text2);
 }
 
 .infoBoxItem {
@@ -482,6 +497,10 @@ button:hover {
 	transition: 0.3s;
 }
 
+.infoBoxItem:hover {
+	background: var(--background3);
+}
+
 .infoBoxItemTitle {
 	font-weight: bold;
 }
@@ -491,7 +510,8 @@ button:hover {
 }
 
 #readerOverlayTopRight {
-	text-align: right;
+	display: flex;
+	justify-content: flex-end;
 }
 
 #overlayProgress {
@@ -500,6 +520,11 @@ button:hover {
 	height: 6px;
 	border-radius: 3px;
 	position: relative;
+	background: var(--background3);
+}
+
+#overlayProgress > div {
+	background: var(--text3);
 }
 
 #overlayProgress > #progressMarker {
@@ -540,6 +565,7 @@ button:hover {
 	top: 0;
 	position: absolute;
 	height: 100%;
+	border-right: 1px solid var(--border1);
 }
 
 #overlayTooltip {
@@ -558,6 +584,9 @@ button:hover {
 	border-radius: 5px;
 	text-align: center;
 	user-select: none;
+	background: var(--background2);
+	border: 1px solid var(--background6);
+	color: var(--text2);
 }
 
 #cancelDeleteButton {
@@ -587,6 +616,14 @@ button:hover {
 	background: none;
 	cursor: pointer;
 	border-radius: 5px;
+	background: var(--background3);
+	border: none;
+	color: var(--text2);
+	transition: 0.2s;
+}
+
+#deleteButtons > *:hover {
+	background: var(--background4);
 }
 
 @keyframes loading-animation {
@@ -613,17 +650,13 @@ button:hover {
 	cursor: pointer;
 	width: 100%;
 	text-align: center;
+	background: var(--background3);
+	border: 1px solid var(--background4);
 }
 
 #circleProgressBarContainer {
 	width: 150px;
 	height: 150px;
-}
-
-@media screen and (max-width: 600px) {
-	.libraryToolbarSection span {
-		display: none;
-	}
 }
 
 .gutenbergDownload {

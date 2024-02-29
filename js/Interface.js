@@ -301,9 +301,6 @@ class Interface {
 					</div>
 					<button id="gutenbergSearchButton">Search</button>
 				</div>
-				<div class="libraryControlsSection">
-					<button class="buttonIcon"><img src="assets/grid.png" class="buttonIconImage"></button>
-				</div>
 			</div>
 			<div class="libraryBooksHolder"></div>
 		`;

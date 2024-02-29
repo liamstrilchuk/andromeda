@@ -94,10 +94,6 @@ body {
 	color: rgb(230, 230, 230);
 }
 
-.infoBoxItem {
-	border-bottom: 1px solid rgb(80, 80, 80);
-}
-
 .infoBoxItem:hover {
 	background: rgb(50, 50, 50);
 }
@@ -130,19 +126,14 @@ body {
 }
 
 #deleteButtons > * {
-	background: rgb(40, 40, 40);
+	background: rgb(50, 50, 50);
 	border: none;
-	border-top: 1px solid rgb(80, 80, 80);
 	color: rgb(230, 230, 230);
 	transition: 0.2s;
 }
 
 #deleteButtons > *:hover {
-	background: rgb(50, 50, 50);
-}
-
-#deleteBookButton {
-	border-right: 1px solid rgb(80, 80, 80);
+	background: rgb(60, 60, 60);
 }
 
 .settingsItem > div > div {

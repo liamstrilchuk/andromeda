@@ -98,6 +98,10 @@ class Util {
 	getDateString(date) {
 		return date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate();
 	}
+
+	async sleep(ms) {
+		return new Promise(resolve => setTimeout(resolve, ms));
+	}
 }
 
 HTMLElement.prototype.setAttributes = function(attributes) {

@@ -7,7 +7,7 @@ class EpubReader {
 		this.util = new Util();
 		this.renderer = new Renderer({});
 		this.loader = new Loader({});
-		this.interface = new Interface(this.container);
+		this.interface = new Interface(this.container, this.inputManager);
 		this.gutenberg = new Gutenberg();
 	}
 

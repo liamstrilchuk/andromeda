@@ -1,6 +1,7 @@
 class Interface {
-	constructor(container) {
+	constructor(container, inputManager) {
 		this.container = container;
+		this.currentlyRendering = false;
 
 		this.librarySearchTerm = "";
 		this.libraryFormat = "list";
@@ -8,6 +9,8 @@ class Interface {
 		this.libraryDescending = true;
 
 		this.currentView = "library";
+		
+		inputManager.addListener("mousedown", this.onMouseDown.bind(this));
 	}
 
 	resetContainer() {
@@ -64,14 +67,82 @@ class Interface {
 			this.createLibrary();
 		});
 
+		const fileInput = reader.util.loadElem("#fileInput");
+		fileInput.addEventListener("change", () => this.addBook(fileInput));
+
+		const addButton = reader.util.loadElem("#addButton");
+		addButton.addEventListener("click", () => fileInput.click());
+
 		await this.renderBooks();
 	}
 
 	async renderBooks() {
+		if (this.currentlyRendering) {
+			return;
+		}
+		this.currentlyRendering = true;
 		const container = reader.util.loadElem(".libraryBooksHolder");
 
 		if (this.libraryFormat === "list") {
-			container.innerHTML = `
+
+
+
+		} else {
+			container.classList.add("libraryGridBooksHolder");
+		}
+
+		const books = await reader.store.loadLibrary();
+		const library = this.sortBooks(this.filterBooks(books));
+		let allHTML = "";
+
+		for (const item of library) {
+			const position = await reader.store.loadPosition(item.title);
+			const percentage = position.percentage;
+
+			const author = item.attributes["Creator"] || "Unknown";
+			let bookElemClass = this.libraryFormat === "list" ? "libraryItem" : "libraryGridItem";
+			let itemHTML = "";
+
+			if (this.libraryFormat === "list") {
+				const lastOpened = item.lastOpened ? new Date(item.lastOpened)
+					.toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" }) : "&mdash;";
+
+				itemHTML = `
+					<div class="libraryImage">
+						<img src="${item.cover}" draggable="false">
+					</div>
+					<div class="libraryTitle"><span>${item.title}</span></div>
+					<div class="libraryAuthor"><span>${author}</span></div>
+					<div class="librarySize">${this.getLength(item.size)}</div>
+					<div class="libraryProgress">${Math.round(percentage)}%</div>
+					<div class="libraryOpened"><span>${lastOpened}</span></div>
+					<div class="libraryProgressBar">
+						<div class="libraryProgressBarInside" style="width: ${Math.round(percentage * 100) / 100}%;"></div>
+					</div>
+				`;
+			} else {
+				itemHTML = `
+					<div class="libraryGridImage">
+						<img src="${item.cover}" draggable="false">
+					</div>
+					<div class="libraryGridTitle"><span>${item.title}</span></div>
+					<div class="libraryGridAuthor"><span>${author}</span></div>
+					<div class="libraryGridProgress"><span>${Math.round(percentage)}% complete</span></div>
+					<div class="libraryProgressBar">
+						<div class="libraryProgressBarInside" style="width: ${Math.round(percentage * 100) / 100}%;"></div>
+					</div>
+				`;
+			}
+
+			allHTML += `
+				<div class="${bookElemClass} libaryElement" title="${item.title}">
+					${itemHTML}
+				</div>
+			`;
+		}
+
+		if (this.libraryFormat === "list") {
+			allHTML = `
 				<div class="libraryItem libraryHeader">
 					<div class="libraryImage"></div>
 					<div class="libraryTitle">Title
@@ -88,8 +159,20 @@ class Interface {
 						${this.libraryFilter === "last-opened" ? `<img src="assets/up-arrow.png" class="librarySortIcon icon${this.libraryDescending}">` : ""}
 					</div>
 				</div>
-			`;
+			` + allHTML;
+		}
 
+		container.innerHTML = allHTML;
+
+		reader.util.loadAllElems(".libaryElement").forEach(elem => {
+			elem.addEventListener("click", () => this.loadBook(elem.title));
+			elem.addEventListener("contextmenu", event => {
+				event.preventDefault();
+				this.openBookContextMenu(event, elem.title);
+			});
+		});
+
+		if (this.libraryFormat === "list") {
 			reader.util.loadElem(".libraryTitle").addEventListener("click", () => {
 				this.libraryDescending = this.libraryFilter === "title" ? !this.libraryDescending : true;
 				this.libraryFilter = "title";
@@ -113,80 +196,58 @@ class Interface {
 				this.libraryFilter = "last-opened";
 				this.renderBooks();
 			});
-		} else {
-			container.innerHTML = ``;
-			container.classList.add("libraryGridBooksHolder");
 		}
 
-		const books = await reader.store.loadLibrary();
-		const library = this.sortBooks(this.filterBooks(books));
+		this.currentlyRendering = false;
+	}
 
-		for (const item of library) {
-			const position = await reader.store.loadPosition(item.title);
-			const percentage = position.percentage;
+	openBookContextMenu(event, title) {
+		reader.util.loadAllElems(".contextMenu").forEach(elem => elem.remove());
+		const contextMenu = reader.util.createElement("div", this.container, "contextMenu");
 
-			const author = item.attributes["Creator"] || "Unknown";
-			let bookElem;
+		contextMenu.innerHTML = `
+			<div class="contextMenuTitle">${title}</div>
+			<div class="contextMenuItem" id="contextMenuOpen">Open</div>
+			<div class="contextMenuItem" id="contextMenuDetails">Details</div>
+			<div class="contextMenuItem contextMenuDelete" id="contextMenuDelete">Delete</div>
+		`;
 
-			if (this.libraryFormat === "list") {
-				bookElem = reader.util.createElement("div", container, "libraryItem").setAttributes({
-					title: item.title
-				});
+		contextMenu.style.left = `${event.clientX}px`;
+		if (event.clientY + contextMenu.clientHeight > window.innerHeight) {
+			contextMenu.style.top = `${event.clientY - contextMenu.clientHeight}px`;
+		} else {
+			contextMenu.style.top = `${event.clientY}px`;
+		}
 
-				const lastOpened = item.lastOpened ? new Date(item.lastOpened)
-					.toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" }) : "&mdash;";
-
-				bookElem.innerHTML += `
-					<div class="libraryImage">
-						<img src="${item.cover}" draggable="false">
-					</div>
-					<div class="libraryTitle"><span>${item.title}</span></div>
-					<div class="libraryAuthor"><span>${author}</span></div>
-					<div class="librarySize">${this.getLength(item.size)}</div>
-					<div class="libraryProgress">${Math.round(percentage)}%</div>
-					<div class="libraryOpened"><span>${lastOpened}</span></div>
-					<div class="libraryProgressBar">
-						<div class="libraryProgressBarInside" style="width: ${Math.round(percentage * 100) / 100}%;"></div>
-					</div>
-				`;
-			} else {
-				bookElem = reader.util.createElement("div", container, "libraryGridItem").setAttributes({
-					title: item.title
-				});
-
-				bookElem.innerHTML += `
-					<div class="libraryGridImage">
-						<img src="${item.cover}" draggable="false">
-					</div>
-					<div class="libraryGridTitle"><span>${item.title}</span></div>
-					<div class="libraryGridAuthor"><span>${author}</span></div>
-					<div class="libraryGridProgress"><span>${Math.round(percentage)}% complete</span></div>
-					<div class="libraryProgressBar">
-						<div class="libraryProgressBarInside" style="width: ${Math.round(percentage * 100) / 100}%;"></div>
-					</div>
-				`;
+		contextMenu.addEventListener("click", event => {
+			if (!event.target.classList.contains("contextMenuItem")) {
+				return;
 			}
 
-			bookElem.addEventListener("click", () => {
-				this.loadBook(bookElem.title);
-			});
+			if (event.target.id === "contextMenuOpen") {
+				this.loadBook(title);
+			}
 
-			// bookElem.querySelector(".libraryElemInfo").addEventListener("click", event => {
-			// 	event.stopPropagation();
-			// 	this.openInfoBox(item.title);
-			// });
+			if (event.target.id === "contextMenuDetails") {
+				this.openInfoBox(title);
+			}
 
-			// bookElem.querySelector(".libraryElemDelete").addEventListener("click", event => {
-			// 	event.stopPropagation();
-			// 	this.openDeleteDialog(item.title);
-			// });
+			if (event.target.id === "contextMenuDelete") {
+				this.openDeleteDialog(title);
+			}
+
+			contextMenu.remove();
+		});
+	}
+
+	onMouseDown(event) {
+		if (this.currentView !== "library") {
+			return;
 		}
 
-		const fileInput = reader.util.loadElem("#fileInput");
-		fileInput.addEventListener("change", () => this.addBook(fileInput));
-
-		const addButton = reader.util.loadElem("#addButton");
-		addButton.addEventListener("click", () => fileInput.click());
+		if (!event.target.className.includes("contextMenu")) {
+			reader.util.loadAllElems(".contextMenu").forEach(elem => elem.remove());
+		}
 	}
 
 	filterBooks(books) {
@@ -197,7 +258,11 @@ class Interface {
 	sortBooks(books) {
 		switch (this.libraryFilter) {
 			case "last-opened":
-				books.sort((a, b) => this.libraryDescending ? b.lastOpened - a.lastOpened : a.lastOpened - b.lastOpened);
+				books.sort((a, b) => {
+					const openedA = a.lastOpened || 0;
+					const openedB = b.lastOpened || 0;
+					return this.libraryDescending ? openedB - openedA : openedA - openedB;
+				});
 				break;
 			case "title":
 				books.sort((a, b) => this.libraryDescending ? b.title.localeCompare(a.title) : a.title.localeCompare(b.title));
@@ -285,6 +350,7 @@ class Interface {
 	}
 
 	createReader() {
+		this.currentView = "reader";
 		if (reader.renderer.readerStylesheet) {
 			reader.renderer.readerStylesheet.remove();
 		}
@@ -520,8 +586,8 @@ class Interface {
 			<div id="deleteDialog">
 				<div id="deleteText">Are you sure you want to delete <i>${title}</i>?</div>
 				<div id="deleteButtons">
-					<button id="deleteBookButton">Delete</button>
 					<button id="cancelDeleteButton">Cancel</button>
+					<button id="deleteBookButton">Delete</button>
 				</div>
 			</div>
 		`);

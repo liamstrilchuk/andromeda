@@ -74,10 +74,6 @@ body {
 	color: rgb(20, 20, 20);
 }
 
-.infoBoxItem {
-	border-bottom: 1px solid rgb(190, 190, 190);
-}
-
 .infoBoxItem:hover {
 	background: rgb(220, 220, 220);
 }

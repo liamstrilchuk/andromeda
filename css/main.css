@@ -203,6 +203,7 @@ body {
 	border-radius: 5px;
 	position: relative;
 	transition: 0.3s;
+	user-select: none;
 }
 
 .libraryGridImage > img {
@@ -236,6 +237,47 @@ body {
 
 .libraryControlsSection button:hover {
 	background: rgb(50, 50, 50);
+}
+
+.contextMenu {
+	position: fixed;
+	z-index: 3;
+	background: rgb(40, 40, 40);
+	border-radius: 5px;
+	overflow: hidden;
+	padding: 5px 10px;
+}
+
+.contextMenuItem {
+	padding: 10px;
+	cursor: pointer;
+	transition: 0.3s;
+	user-select: none;
+	border-radius: 5px;
+	min-width: 100px;
+	margin: 5px 0;
+}
+
+.contextMenuTitle {
+	padding: 10px;
+	font-weight: bold;
+	user-select: none;
+	max-width: 200px;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.contextMenuDelete {
+	background: rgb(100, 50, 50);
+}
+
+.contextMenuItem:hover {
+	background: rgb(50, 50, 50);
+}
+
+.contextMenuDelete:hover {
+	background: rgb(150, 50, 50);
 }
 
 .mainHolder {
@@ -421,12 +463,12 @@ button:hover {
 }
 
 #infoBox {
-	width: 400px;
+	width: 500px;
 	border-radius: 5px;
-	font-size: 1.2em;
 	user-select: none;
 	max-height: 75%;
 	overflow: auto;
+	padding: 10px;
 }
 
 .infoBoxItem {
@@ -436,6 +478,8 @@ button:hover {
 	height: 40px;
 	padding: 0 10px;
 	cursor: pointer;
+	border-radius: 5px;
+	transition: 0.3s;
 }
 
 .infoBoxItemTitle {
@@ -516,19 +560,33 @@ button:hover {
 	user-select: none;
 }
 
+#cancelDeleteButton {
+	margin-right: 10px;
+}
+
+#deleteBookButton {
+	background: rgb(120, 50, 50) !important;
+}
+
+#deleteBookButton:hover {
+	background: rgb(145, 50, 50) !important;
+}
+
 #deleteText {
 	padding: 20px;
 }
 
 #deleteButtons {
 	display: flex;
+	justify-content: flex-end;
 }
 
 #deleteButtons > * {
-	width: 50%;
+	width: 100px;
 	padding: 10px;
 	background: none;
 	cursor: pointer;
+	border-radius: 5px;
 }
 
 @keyframes loading-animation {

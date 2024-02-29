@@ -28,8 +28,16 @@ class Interface {
 			</div>
 		`;
 
-		reader.util.loadElem("#navLibrary").addEventListener("click", () => this.createLibrary());
-		reader.util.loadElem("#navGutenberg").addEventListener("click", () => this.createGutenberg());
+		reader.util.loadElem("#navLibrary").addEventListener("click", () => {
+			if (this.currentView !== "library") {
+				this.createLibrary();
+			}
+		});
+		reader.util.loadElem("#navGutenberg").addEventListener("click", () => {
+			if (this.currentView !== "gutenberg") {
+				this.createGutenberg();
+			}
+		});
 	}
 
 	async createLibrary() {
@@ -83,11 +91,7 @@ class Interface {
 		this.currentlyRendering = true;
 		const container = reader.util.loadElem(".libraryBooksHolder");
 
-		if (this.libraryFormat === "list") {
-
-
-
-		} else {
+		if (this.libraryFormat === "grid") {
 			container.classList.add("libraryGridBooksHolder");
 		}
 

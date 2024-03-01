@@ -319,6 +319,15 @@ body {
 	user-select: none;
 }
 
+.navigationBarTitle img {
+	width: 64px;
+}
+
+.navigationBarTitle span {
+	margin-left: 10px;
+	color: #e8f;
+}
+
 .container {
 	padding: 30px;
 	width: 100%;

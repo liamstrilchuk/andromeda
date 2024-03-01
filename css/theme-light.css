@@ -17,3 +17,7 @@
 	border: 6px solid black;
 	border-color: black transparent black transparent;
 }
+
+.navigationBarTitle span {
+	color: #83a;
+}

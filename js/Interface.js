@@ -4,7 +4,7 @@ class Interface {
 		this.currentlyRendering = false;
 
 		this.librarySearchTerm = "";
-		this.libraryFormat = "list";
+		this.libraryFormat = "grid";
 		this.libraryFilter = "last-opened";
 		this.libraryDescending = true;
 
@@ -19,7 +19,7 @@ class Interface {
 			<input style="display: none" type="file" accept=".epub" id="fileInput">
 			<div class="mainHolder">
 				<div class="navigationBar">
-					<div class="navigationBarTitle">EPUB Library</div>
+					<div class="navigationBarTitle"><img src="assets/logo.png" draggable="false"><span>Andromeda</span></div>
 					<div class="navigationBarItem ${this.currentView === "library" ? "currentNavItem" : ""}" id="navLibrary">Your Library</div>
 					<div class="navigationBarItem ${this.currentView === "gutenberg" ? "currentNavItem" : ""}" id="navGutenberg">Project Gutenberg</div>
 					<div class="navigationBarItem ${this.currentView === "about" ? "currentNavItem" : ""}" id="navAbout">About</div>

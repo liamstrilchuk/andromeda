@@ -4,8 +4,6 @@ class Loader {
 	}
 
 	load(file) {
-		reader.interface.changeOverlayState("Loading file...", "25");
-
 		const promise = new Promise((resolve, _reject) => {
 			const zip = new JSZip();
 
@@ -20,8 +18,6 @@ class Loader {
 	}
 
 	async parse(zip) {
-		reader.interface.changeOverlayState("Parsing contents...", "50");
-
 		const [ opfPath, opfName ] = this.getOpfPath(zip);
 
 		const opf = await zip.file(opfPath + opfName).async("text");
@@ -81,7 +77,7 @@ class Loader {
 			if (item.tagName === "dc:title" && !title) {
 				title = item.textContent;
 			}
-		})
+		});
 
 		// check if book is already in library
 		const library = await reader.store.loadLibrary();
@@ -90,8 +86,6 @@ class Loader {
 				return elem;
 			}
 		}
-
-		reader.interface.changeOverlayState("Parsing text...", "75");
 
 		const bookData = [];
 		for (let i = 0; i < chapters.length; i++) {
@@ -105,8 +99,6 @@ class Loader {
 			}
 			bookData.push(await this.parseChapter(chapterData, chapterTitle, chapters[i].href, zip));
 		}
-
-		reader.interface.changeOverlayState("Saving...", "100");
 
 		const book = {
 			title: title,

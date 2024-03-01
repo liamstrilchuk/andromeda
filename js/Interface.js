@@ -600,19 +600,4 @@ class Interface {
 
 		reader.util.loadElem("#cancelDeleteButton").addEventListener("click", () => reader.util.loadElem("#infoBoxContainer").remove());
 	}
-
-	changeOverlayState(text, percentage) {
-		// reader.util.loadElem("#libraryOverlay").applyStyles({
-		// 	background: "rgba(0, 0, 0, 0.4)",
-		// 	display: "flex"
-		// });
-
-		// if (text) {
-		// 	reader.util.loadElem("#libraryOverlayText").innerHTML = text;
-		// }
-
-		// if (percentage) {
-		// 	reader.util.loadElem("#libraryOverlayProgressBar").style.width = `${percentage}%`;
-		// }
-	}
 }

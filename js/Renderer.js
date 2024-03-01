@@ -148,11 +148,14 @@ class Renderer {
 			return;
 		}
 
+		this.loading = true;
+
 		return new Promise(resolve => {
 			window.setTimeout(() => {
 				this.position.anchor = this.getAnchor();
 				reader.store.setPosition(this.book.title, this.position.chapter, Math.max(this.position.anchor, 0), percentage);
 				resolve();
+				this.loading = false;
 			}, 300);
 		});
 	}
@@ -233,16 +236,15 @@ class Renderer {
 			return 0;
 		}
 		const child = elems[anchor].offsetLeft;
-		const padding = await reader.store.loadSetting("margin");
 		let page = 0;
 		let left = 0;
 
 		while (left < child) {
 			page += this.getColumnCount();
-			left = Math.floor(page / this.getColumnCount()) * (this.pageContainer.clientWidth + 2 * padding);
+			left = Math.floor(page / this.getColumnCount()) * (this.pageContainer.clientWidth + 100);
 		}
 
-		return page;
+		return left > child ? page - this.getColumnCount() : page;
 	}
 
 	onMouseMove() {
@@ -253,7 +255,7 @@ class Renderer {
 		this.overlayTimeout = window.setTimeout(() => {
 			reader.util.loadElem("#readerOverlayTop").applyStyles({ "opacity": 0 });
 			reader.util.loadElem("#readerOverlayBottom").applyStyles({ "opacity": 0 });
-		}, 1000);
+		}, 1500);
 	}
 
 	overlayProgressMouseMove(event) {
@@ -270,7 +272,7 @@ class Renderer {
 		tooltip.innerHTML = title;
 		tooltip.applyStyles({
 			"opacity": 1,
-			"left": `${clientX - 50}px`
+			"left": `${clientX - tooltip.clientWidth / 2}px`
 		});
 
 		window.clearTimeout(this.tooltipTimeout);

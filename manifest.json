@@ -1,6 +1,6 @@
 {
 	"manifest_version": 3,
-	"name": "EPUB Reader",
+	"name": "Andromeda",
 	"icons": {
 		"256": "assets/logo.png"
 	},
@@ -8,6 +8,6 @@
 	"background": {
 		"service_worker": "js/background.js"
 	},
-	"permissions": ["tabs", "storage", "unlimitedStorage", "clipboardWrite"],
+	"permissions": ["tabs", "storage", "unlimitedStorage"],
 	"action": {}
 }

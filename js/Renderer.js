@@ -179,10 +179,15 @@ class Renderer {
 			this.position.chapter--;
 			await this.loadChapter();
 			this.pageContainer.style.opacity = 0;
+
 			this.position.anchor = Math.max(this.pageContainer.querySelectorAll("p").length - 1, 0);
+			const percentage = reader.util.getReadPercentage(this.book.contents, this.position.chapter, this.position.anchor);
+			reader.store.setPosition(this.book.title, this.position.chapter, this.position.anchor, percentage);
+
 			this.page = await this.getPageFromAnchor(this.position.anchor);
 			await this.onResize(true);
 			this.pageContainer.style.opacity = 1;
+
 			return;
 		}
 
@@ -204,7 +209,10 @@ class Renderer {
 			}
 
 			this.position.chapter++;
-			this.loadChapter();
+			await this.loadChapter();
+			const percentage = reader.util.getReadPercentage(this.book.contents, this.position.chapter, this.position.anchor);
+			reader.store.setPosition(this.book.title, this.position.chapter, this.position.anchor, percentage);
+			
 			return;
 		}
 

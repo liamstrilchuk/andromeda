@@ -1,8 +1,8 @@
 const defaultSettings = {
-	fontSize: 20,
-	theme: "dark",
+	fontSize: 16,
+	theme: "night",
 	maxWidth: 1500,
-	lineSpacing: 1.15,
+	lineSpacing: 1.35,
 	font: "serif"
 };
 

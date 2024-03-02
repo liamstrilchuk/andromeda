@@ -1,0 +1,23 @@
+:root {
+	--background1: rgb(234, 219, 203);
+	--background2: rgb(214, 199, 183);
+	--background3: rgb(204, 189, 173);
+	--background4: rgb(184, 169, 153);
+	--background5: rgb(164, 149, 123);
+	--background6: rgb(144, 129, 113);
+
+	--text1: rgb(107, 50, 30);
+	--text2: rgb(87, 40, 20);
+	--text3: rgb(57, 0, 0);
+
+	--border1: rgb(55, 55, 55);
+}
+
+#loadingAnimation:after {
+	border: 6px solid black;
+	border-color: black transparent black transparent;
+}
+
+.navigationBarTitle span {
+	color: #83a;
+}

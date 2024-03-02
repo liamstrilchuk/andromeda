@@ -22,6 +22,7 @@ class Interface {
 					<div class="navigationBarTitle"><img src="assets/logo.png" draggable="false"><span>Andromeda</span></div>
 					<div class="navigationBarItem ${this.currentView === "library" ? "currentNavItem" : ""}" id="navLibrary">Your Library</div>
 					<div class="navigationBarItem ${this.currentView === "gutenberg" ? "currentNavItem" : ""}" id="navGutenberg">Project Gutenberg</div>
+					<div class="navigationBarItem ${this.currentView === "settings" ? "currentNavItem" : ""}" id="navSettings">Settings</div>
 					<div class="navigationBarItem ${this.currentView === "about" ? "currentNavItem" : ""}" id="navAbout">About</div>
 				</div>
 				<div class="container"></div>
@@ -33,17 +34,24 @@ class Interface {
 				this.createLibrary();
 			}
 		});
+
 		reader.util.loadElem("#navGutenberg").addEventListener("click", () => {
 			if (this.currentView !== "gutenberg") {
 				this.createGutenberg();
+			}
+		});
+
+		reader.util.loadElem("#navSettings").addEventListener("click", () => {
+			if (this.currentView !== "settings") {
+				this.createSettings();
 			}
 		});
 	}
 
 	async createLibrary() {
 		this.currentView = "library";
-		reader.util.setTitle("EPUB Library");
 		reader.renderer.close();
+		reader.util.setTitle("Your Library – Andromeda");
 
 		this.resetContainer();
 
@@ -289,6 +297,7 @@ class Interface {
 	async createGutenberg(search="") {
 		this.currentView = "gutenberg";
 		this.resetContainer();
+		reader.util.setTitle("Project Gutenberg – Andromeda");
 
 		const container = reader.util.loadElem(".container");
 
@@ -348,6 +357,104 @@ class Interface {
 				</div>
 			`;
 		}
+	}
+
+	async createSettings(container) {
+		const isReader = this.currentView === "reader";
+		if (!container) {
+			this.currentView = "settings";
+			this.resetContainer();
+			reader.util.setTitle("Settings – Andromeda");
+			container = reader.util.loadElem(".container");
+		}
+
+		const fontSize = await reader.store.loadSetting("fontSize");
+		const lineHeight = await reader.store.loadSetting("lineSpacing");
+		const maxWidth = await reader.store.loadSetting("maxWidth");
+
+		container.innerHTML = `
+			<div class="settingsContainer">
+				<div class="settingsSection">
+					<div class="settingsSectionTitle">Theme</div>
+					<div class="settingsSectionFlex">
+						<div class="settingsTheme ${isReader ? "settingsThemeSmall" : ""}" id="settingsTheme-light">Light</div>
+						<div class="settingsTheme ${isReader ? "settingsThemeSmall" : ""}" id="settingsTheme-sepia">Sepia</div>
+						<div class="settingsTheme ${isReader ? "settingsThemeSmall" : ""}" id="settingsTheme-dark">Dark</div>
+						<div class="settingsTheme ${isReader ? "settingsThemeSmall" : ""}" id="settingsTheme-night">Night</div>
+						<div class="settingsTheme ${isReader ? "settingsThemeSmall" : ""}" id="settingsTheme-aurora">Aurora</div>
+					</div>
+				</div>
+				<div class="settingsSection">
+					<div class="settingsSectionTitle">Font Size</div>
+					<input type="range" min="15" max="25" value="${fontSize}" step="1" class="settingsSlider" id="settingsFontSize">
+					<div class="sliderTicks" id="fontSizeTicks"></div>
+					<p id="fontSizeSample" style="font-size: ${fontSize}px;">The quick brown fox jumps over the lazy dog.</p>
+				</div>
+				<div class="settingsSection">
+					<div class="settingsSectionTitle">Line Height</div>
+					<input type="range" min="1.05" max="1.95" value="${lineHeight}" step="0.1" class="settingsSlider" id="settingsLineHeight">
+					<div class="sliderTicks" id="lineHeightTicks"></div>
+					<p style="line-height: ${lineHeight}em; max-width: 600px;" id="lineHeightSample">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin vestibulum velit et pellentesque finibus. Sed volutpat purus pulvinar, molestie sem non, mattis nulla. Pellentesque fringilla condimentum tortor at consequat. Vivamus vitae sem ultricies, viverra leo a, congue nisi.</p>
+				</div>
+				<div class="settingsSection">
+					<div class="settingsSectionTitle">Maximum Reader Width</div>
+					<input type="range" min="1000" max="2000" value="${maxWidth}" step="100" class="settingsSlider" id="settingsMaxWidth">
+					<div class="sliderTicks" id="maxWidthTicks"></div>
+					<p id="maxWidthNum">${maxWidth} pixels</p>
+				</div>
+			</div>
+		`;
+
+		const fontSizeTicks = reader.util.loadElem("#fontSizeTicks");
+		for (let i = 15; i <= 25; i++) {
+			reader.util.createElement("span", fontSizeTicks).setAttributes({ value: i });
+		}
+
+		const lineHeightTicks = reader.util.loadElem("#lineHeightTicks");
+		for (let i = 1.05; i < 2.05; i += 0.1) {
+			reader.util.createElement("span", lineHeightTicks).setAttributes({ value: i });
+		}
+
+		const maxWidthTicks = reader.util.loadElem("#maxWidthTicks");
+		for (let i = 1000; i <= 2000; i += 100) {
+			reader.util.createElement("span", maxWidthTicks).setAttributes({ value: i });
+		}
+
+		const themeElems = reader.util.loadAllElems(".settingsTheme");
+		themeElems.forEach(elem => elem.addEventListener("click", async () => {
+			await reader.store.updateSetting("theme", elem.id.split("-")[1]);
+			this.loadTheme(elem.id.split("-")[1]);
+		}));
+
+		const fontSizeSlider = reader.util.loadElem("#settingsFontSize");
+		fontSizeSlider.addEventListener("input", async () => {
+			await reader.store.updateSetting("fontSize", fontSizeSlider.value);
+			reader.util.loadElem("#fontSizeSample").style.fontSize = `${fontSizeSlider.value}px`;
+
+			if (isReader) {
+				reader.renderer.onResize(true);
+			}
+		});
+
+		const lineHeightSlider = reader.util.loadElem("#settingsLineHeight");
+		lineHeightSlider.addEventListener("input", async () => {
+			await reader.store.updateSetting("lineSpacing", lineHeightSlider.value);
+			reader.util.loadElem("#lineHeightSample").style.lineHeight = lineHeightSlider.value;
+
+			if (isReader) {
+				reader.renderer.onResize(true);
+			}
+		});
+
+		const maxWidthSlider = reader.util.loadElem("#settingsMaxWidth");
+		maxWidthSlider.addEventListener("input", async () => {
+			await reader.store.updateSetting("maxWidth", maxWidthSlider.value);
+			reader.util.loadElem("#maxWidthNum").innerText = `${maxWidthSlider.value} pixels`;
+
+			if (isReader) {
+				reader.renderer.onResize(true);
+			}
+		});
 	}
 
 	createReader() {
@@ -485,101 +592,10 @@ class Interface {
 
 	openSettingsBox() {
 		this.createInfoBox(`
-			<div class="settingsItem">
-				<span>Theme</span>
-				<div id="settingsTheme">
-					<div id="settingsTheme-light">Light</div>
-					<div id="settingsTheme-dark">Dark</div>
-				</div>
-			</div>
-			<div class="settingsItem">
-				<span>Font size</span>
-				<div id="settingsSize">
-					<div id="settingsSize-18">18</div>
-					<div id="settingsSize-19">19</div>
-					<div id="settingsSize-20">20</div>
-					<div id="settingsSize-21">21</div>
-					<div id="settingsSize-22">22</div>
-					<div id="settingsSize-23">23</div>
-				</div>
-			</div>
-			<div class="settingsItem">
-				<span>Line height</span>
-				<div id="settingsHeight">
-					<div id="settingsHeight-1.0">1.0</div>
-					<div id="settingsHeight-1.1">1.1</div>
-					<div id="settingsHeight-1.2">1.2</div>
-					<div id="settingsHeight-1.3">1.3</div>
-					<div id="settingsHeight-1.4">1.4</div>
-					<div id="settingsHeight-1.5">1.5</div>
-				</div>
-			</div>
-			<div class="settingsItem">
-				<span>Maximum reader width</span>
-				<div id="settingsWidth">
-					<div id="settingsWidth-1100">1100</div>
-					<div id="settingsWidth-1200">1200</div>
-					<div id="settingsWidth-1300">1300</div>
-					<div id="settingsWidth-1400">1400</div>
-					<div id="settingsWidth-1500">1500</div>
-					<div id="settingsWidth-1600">1600</div>
-					<div id="settingsWidth-none">None</div>
-				</div>
-			</div>
-			<div class="settingsItem">
-				<span>Font</span>
-				<div id="settingsFont">
-					<div id="settingsFont-arial" style="font-family: arial;">Sans-serif</div>
-					<div id="settingsFont-serif" style="font-family: serif;">Serif</div>
-					<div id="settingsFont-monospace" style="font-family: monospace;">Monospace</div>
-				</div>
-			</div>
+			<div id="settingsInfoBox"></div>
 		`, "Settings");
 
-		const themeElems = reader.util.loadAllElems("div", reader.util.loadElem("#settingsTheme"));
-		themeElems.forEach(elem => elem.addEventListener("click", async () => {
-			await reader.store.updateSetting("theme", elem.id.split("-")[1]);
-			this.loadTheme(elem.id.split("-")[1]);
-
-			themeElems.forEach(elem => elem.classList.remove("settingsSelected"));
-			elem.classList.add("settingsSelected");
-		}));
-
-		const sizeElems = reader.util.loadAllElems("div", reader.util.loadElem("#settingsSize"));
-		sizeElems.forEach(elem => elem.addEventListener("click", async () => {
-			await reader.store.updateSetting("fontSize", elem.id.split("-")[1]);
-			reader.renderer.onResize();
-
-			sizeElems.forEach(elem => elem.classList.remove("settingsSelected"));
-			elem.classList.add("settingsSelected");
-		}));
-
-		const heightElems = reader.util.loadAllElems("div", reader.util.loadElem("#settingsHeight"));
-		heightElems.forEach(elem => elem.addEventListener("click", async () => {
-			await reader.store.updateSetting("lineSpacing", elem.id.split("-")[1]);
-			reader.renderer.onResize();
-
-			heightElems.forEach(elem => elem.classList.remove("settingsSelected"));
-			elem.classList.add("settingsSelected");
-		}));
-
-		const widthElems = reader.util.loadAllElems("div", reader.util.loadElem("#settingsWidth"));
-		widthElems.forEach(elem => elem.addEventListener("click", async () => {
-			await reader.store.updateSetting("maxWidth", elem.id.split("-")[1]);
-			reader.renderer.onResize();
-
-			widthElems.forEach(elem => elem.classList.remove("settingsSelected"));
-			elem.classList.add("settingsSelected");
-		}));
-
-		const fontElems = reader.util.loadAllElems("div", reader.util.loadElem("#settingsFont"));
-		fontElems.forEach(elem => elem.addEventListener("click", async () => {
-			await reader.store.updateSetting("font", elem.id.split("-")[1]);
-			reader.renderer.onResize();
-
-			fontElems.forEach(elem => elem.classList.remove("settingsSelected"));
-			elem.classList.add("settingsSelected");
-		}));
+		this.createSettings(reader.util.loadElem("#settingsInfoBox"));
 	}
 
 	openDeleteDialog(title) {

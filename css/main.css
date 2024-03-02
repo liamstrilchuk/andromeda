@@ -1,5 +1,6 @@
 * {
 	box-sizing: border-box;
+	transition: background 0.3s;
 }
 
 body {
@@ -484,7 +485,7 @@ button:hover {
 }
 
 #infoBox {
-	width: 500px;
+	width: 650px;
 	border-radius: 5px;
 	user-select: none;
 	max-height: 75%;
@@ -690,4 +691,115 @@ button:hover {
 .gutenbergDownloadHolder {
 	justify-content: flex-end;
 	padding-right: 30px !important;
+}
+
+.settingsSection {
+	margin-bottom: 25px;
+	min-width: 500px;
+}
+
+.settingsSectionTitle {
+	font-size: 1.5em;
+	font-weight: bold;
+	margin-bottom: 10px;
+}
+
+.settingsSectionFlex {
+	display: flex;
+	flex-wrap: wrap;
+}
+
+.settingsTheme {
+	width: 200px;
+	height: 125px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	user-select: none;
+	margin: 0 10px 10px 0;
+	cursor: pointer;
+	border-radius: 5px;
+	font-weight: bold;
+	font-size: 1.1em;
+}
+
+.settingsThemeSmall {
+	width: 100px;
+	height: 60px;
+}
+
+#settingsTheme-light {
+	background: rgb(205, 205, 215);
+	border: 5px solid rgb(175, 175, 185);
+	color: rgb(15, 15, 15);
+}
+
+#settingsTheme-dark {
+	background: rgb(30, 30, 30);
+	border: 5px solid rgb(50, 50, 50);
+	color: rgb(240, 240, 240);
+}
+
+#settingsTheme-night {
+	background: rgb(30, 30, 40);
+	border: 5px solid rgb(50, 50, 60);
+	color: rgb(240, 240, 255);
+}
+
+#settingsTheme-sepia {
+	background: rgb(234, 219, 203);
+	border: 5px solid rgb(214, 199, 183);
+	color: rgb(107, 50, 30);
+}
+
+#settingsTheme-aurora {
+	background: linear-gradient(45deg, rgb(51, 17, 68), rgb(60, 17, 60));
+	border: 5px solid #504;
+	color: rgb(240, 240, 240);
+}
+
+.settingsSlider {
+	width: 100%;
+	max-width: 600px;
+	appearance: none;
+	-webkit-appearance: none;
+	background: transparent;
+	cursor: pointer;
+	position: relative;
+	z-index: 2;
+	min-width: 400px;
+}
+
+.settingsSlider::-webkit-slider-thumb {
+	appearance: none;
+	width: 20px;
+	height: 20px;
+	border-radius: 50%;
+	background: var(--background6);
+	cursor: pointer;
+	margin-top: -5px;
+}
+
+.settingsSlider::-webkit-slider-runnable-track {
+	height: 8px;
+	background: var(--background3);
+	border-radius: 5px;
+}
+
+.sliderTicks {
+	display: flex;
+	width: 100%;
+	max-width: 600px;
+	min-width: 400px;
+	justify-content: space-between;
+	padding: 0 8px 0 12px;
+}
+
+.sliderTicks span {
+	height: 8px;
+	border-right: 1px solid var(--text1);
+}
+
+.settingsContainer {
+	padding: 20px;
 }

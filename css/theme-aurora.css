@@ -1,10 +1,10 @@
 :root {
-	--background1: linear-gradient(45deg, #102, #201);
-	--background2: linear-gradient(45deg, #203, #302);
-	--background3: linear-gradient(45deg, #314, #413);
-	--background4: linear-gradient(45deg, #425, #524);
-	--background5: linear-gradient(45deg, #536, #305);
-	--background6: linear-gradient(45deg, #647, #746);
+	--background1: linear-gradient(45deg, rgb(17, 0, 34), rgb(25, 0, 25));
+	--background2: linear-gradient(45deg, rgb(34, 0, 51), rgb(42, 0, 42));
+	--background3: linear-gradient(45deg, rgb(51, 17, 68), rgb(60, 17, 60));
+	--background4: linear-gradient(45deg, rgb(68, 34, 85), rgb(77, 34, 77));
+	--background5: linear-gradient(45deg, rgb(85, 51, 102), rgb(93, 0, 93));
+	--background6: linear-gradient(45deg, rgb(102, 68, 119), rgb(110, 68, 110));
 
 	--text1: rgb(240, 240, 240);
 	--text2: rgb(230, 230, 230);

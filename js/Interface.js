@@ -46,6 +46,12 @@ class Interface {
 				this.createSettings();
 			}
 		});
+
+		reader.util.loadElem("#navAbout").addEventListener("click", () => {
+			if (this.currentView !== "about") {
+				this.createAbout();
+			}
+		});
 	}
 
 	async createLibrary() {
@@ -455,6 +461,24 @@ class Interface {
 				reader.renderer.onResize(true);
 			}
 		});
+	}
+
+	createAbout() {
+		this.currentView = "about";
+		this.resetContainer();
+		reader.util.setTitle("About – Andromeda");
+
+		const container = reader.util.loadElem(".container");
+
+		container.innerHTML = `
+			<div class="aboutContainer">
+				<img src="assets/logo.png" class="aboutLogo" draggable="false">
+				<div class="aboutTitle">Andromeda: EPUB Reader for Chrome</div>
+				<div class="aboutText">A completely free, <a href="https://github.com/liamstrilchuk/andromeda" target="_blank">open-source</a> ebook library for Chrome.</div>
+				<div class="aboutText">Questions, comments, or suggestions? Add an issue on <a href="https://github.com/liamstrilchuk/andromeda/issues" target="_blank">this project's GitHub page</a>.</div>
+				<div class="aboutText">Created by Liam Strilchuk</div>
+			</div>
+		`;
 	}
 
 	createReader() {

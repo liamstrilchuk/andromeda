@@ -18,6 +18,6 @@
 	border-color: black transparent black transparent;
 }
 
-.navigationBarTitle span {
+.navigationBarTitle span, .aboutTitle {
 	color: #83a;
 }

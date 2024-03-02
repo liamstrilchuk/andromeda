@@ -803,3 +803,26 @@ button:hover {
 .settingsContainer {
 	padding: 20px;
 }
+
+.aboutContainer {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	width: 100%;
+}
+
+.aboutText {
+	margin-bottom: 15px;
+	max-width: 600px;
+}
+
+.aboutText a {
+	color: var(--text1);
+}
+
+.aboutTitle {
+	color: #e8f;
+	font-size: 2em;
+	font-weight: bold;
+	margin-bottom: 30px;
+}

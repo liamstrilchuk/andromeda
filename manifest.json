@@ -1,6 +1,7 @@
 {
 	"manifest_version": 3,
 	"name": "Andromeda",
+	"description": "A free, open-source EPUB reader for Chrome.",
 	"icons": {
 		"256": "assets/logo.png"
 	},

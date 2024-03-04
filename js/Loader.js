@@ -4,17 +4,16 @@ class Loader {
 	}
 
 	load(file) {
-		const promise = new Promise((resolve, _reject) => {
+		return new Promise((resolve, _reject) => {
 			const zip = new JSZip();
 
 			zip.loadAsync(file).then(async zip => {
 				resolve(await this.parse(zip));
 			}, error => {
 				console.error("Error loading file: " + error);
+				alert("Unfortunately, an error occurred while loading the file. It may be corrupted.");
 			});
 		});
-
-		return promise;
 	}
 
 	async parse(zip) {

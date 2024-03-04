@@ -159,6 +159,14 @@ class Interface {
 			`;
 		}
 
+		if (library.length === 0) {
+			allHTML = `
+				<div class="libraryItem libraryEmpty">
+					<div class="libraryEmptyText">Your library is empty. Add a book to get started.</div>
+				</div>
+			`;
+		}
+
 		if (this.libraryFormat === "list") {
 			allHTML = `
 				<div class="libraryItem libraryHeader">

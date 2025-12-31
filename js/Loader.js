@@ -41,7 +41,10 @@ class Loader {
 		if (manifestItems["ncx"] || manifestItems["ncxtoc"] || manifestItems["toc"]) {
 			ncxHref = (manifestItems["ncx"] || manifestItems["ncxtoc"] || manifestItems["toc"]).href;
 			const toc = await zip.file(ncxHref).async("string");
-			tableOfContents = this.parseTableOfContents(parser.parseFromString(toc, "application/xhtml+xml"), opfPath);
+			tableOfContents = this.parseTableOfContents(
+				parser.parseFromString(toc, "application/xhtml+xml"),
+				opfPath
+			);
 		}
 		ncxHref = ncxHref.includes("/") ? ncxHref.split("/")[0] + "/" : "";
 
@@ -50,7 +53,9 @@ class Loader {
 		const coverImage = opfDoc.querySelector("meta[name=cover]");
 		let cover = null;
 		if (coverImage) {
-			const url = opfDoc.querySelector("#" + coverImage.getAttribute("content").replace(".", "\\.")).getAttribute("href");
+			const url = opfDoc
+				.querySelector("#" + coverImage.getAttribute("content").replace(".", "\\."))
+				.getAttribute("href");
 			cover = "data:image/png;base64," + (await zip.file(opfPath + url).async("base64"));
 		}
 
@@ -65,7 +70,13 @@ class Loader {
 
 		const metadata = opfDoc.querySelector("metadata");
 		const attributes = {};
-		const toSave = { "dc:language": "Language", "dc:publisher": "Publisher", "dc:creator": "Creator", "dc:rights": "Rights", "dc:date": "Date" };
+		const toSave = {
+			"dc:language": "Language",
+			"dc:publisher": "Publisher",
+			"dc:creator": "Creator",
+			"dc:rights": "Rights",
+			"dc:date": "Date"
+		};
 		let title = "";
 
 		[...metadata.children].forEach(item => {
@@ -183,7 +194,10 @@ class Loader {
 					points[0].title = elem.children[0].innerHTML;
 					break;
 				case "content":
-					points[0].content = reader.util.getRelativePath(opfPath, elem.attributes["src"].value.split("#")[0]);
+					points[0].content = reader.util.getRelativePath(
+						opfPath,
+						elem.attributes["src"].value.split("#")[0]
+					);
 					break;
 				case "navPoint":
 					for (let p of this.parseNavPoint(elem, indentation + 1, opfPath)) {
@@ -207,23 +221,31 @@ class Loader {
 		
 		const body = chapterDoc.querySelector("body");
 		
-		await Promise.allSettled([...body.querySelectorAll("img"), ...body.querySelectorAll("image")].map(async (child) => {
-			return new Promise(async (resolve, reject) => {
-				const attrName = child.hasAttribute("src") ? "src" : (child.hasAttribute("xlink:href") ? "xlink:href" : null);
-				if (attrName) {
-					try {
-						const imgFilename = reader.util.getRelativePath(filename, child.getAttribute(attrName));
-						const imgData = "data:image/png;base64," + (await zip.file(imgFilename).async("base64"));
+		await Promise.allSettled(
+			[
+				...body.querySelectorAll("img"),
+				...body.querySelectorAll("image")
+			].map(async (child) => {
+				return new Promise(async (resolve, reject) => {
+					const attrName = child.hasAttribute("src")
+						? "src" 
+						: (child.hasAttribute("xlink:href") ? "xlink:href" : null);
 
-						child.setAttribute(attrName, imgData);
-						resolve();
-					} catch (err) {
-						console.log("Error while loading image: " + err);
-						reject(err);
+					if (attrName) {
+						try {
+							const imgFilename = reader.util.getRelativePath(filename, child.getAttribute(attrName));
+							const imgData = "data:image/png;base64," + (await zip.file(imgFilename).async("base64"));
+
+							child.setAttribute(attrName, imgData);
+							resolve();
+						} catch (err) {
+							console.log("Error while loading image: " + err);
+							reject(err);
+						}
 					}
-				}
-			});
-		}));
+				});
+			})
+		);
 
 		return {
 			title: title,

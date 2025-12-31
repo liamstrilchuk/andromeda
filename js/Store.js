@@ -3,7 +3,7 @@ const defaultSettings = {
 	theme: "night",
 	maxWidth: 1500,
 	lineSpacing: 1.35,
-	font: "serif"
+	font: "sans-serif"
 };
 
 class Store {
@@ -124,6 +124,10 @@ class Store {
 	}
 
 	async get(item) {
+		if (typeof chrome === "undefined") {
+			return JSON.parse(localStorage.getItem(item));
+		}
+
 		const promise = new Promise((resolve, _reject) => {
 			chrome.storage.local.get(item, (result) => {
 				resolve(result[item]);
@@ -134,6 +138,10 @@ class Store {
 	}
 
 	async set(item, value) {
+		if (typeof chrome === "undefined") {
+			return localStorage.setItem(item, JSON.stringify(value));
+		}
+
 		const promise = new Promise((resolve, _reject) => {
 			chrome.storage.local.set({ [item]: value }, () => {
 				resolve();

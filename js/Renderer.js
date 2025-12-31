@@ -28,20 +28,52 @@ class Renderer {
 		this.position.anchor = anchor;
 		this.onResize(true);
 
-		this.listeners.push([ "resize", reader.inputManager.addListener("resize", this.onResize.bind(this)) ]);
-		this.listeners.push([ "mousemove", reader.inputManager.addListener("mousemove", this.onMouseMove.bind(this)) ]);
-		this.listeners.push([ null, reader.inputManager.onKeys([ "ArrowLeft", "ArrowUp" ], this.prevPage.bind(this)) ]);
-		this.listeners.push([ null, reader.inputManager.onKeys([ "ArrowRight", "ArrowDown", " " ], this.nextPage.bind(this)) ]);
+		this.listeners.push([
+			"resize",
+			reader.inputManager.addListener(
+				"resize",
+				this.onResize.bind(this)
+			)
+		]);
+		this.listeners.push([
+			"mousemove",
+			reader.inputManager.addListener(
+				"mousemove",
+				this.onMouseMove.bind(this)
+			)
+		]);
+		this.listeners.push([
+			null,
+			reader.inputManager.onKeys(
+				[ "ArrowLeft", "ArrowUp" ],
+				this.prevPage.bind(this)
+			)
+		]);
+		this.listeners.push([
+			null,
+			reader.inputManager.onKeys(
+				[ "ArrowRight", "ArrowDown", " " ],
+				this.nextPage.bind(this)
+			)
+		]);
 
 		reader.util.loadElem("#readerOverlayTopText").innerHTML = `${this.book.title} &ndash; ${this.book.attributes["Creator"]}`;
 
-		reader.util.loadElem("#overlayProgress").addEventListener("mousemove", this.overlayProgressMouseMove.bind(this));
-		reader.util.loadElem("#overlayProgress").addEventListener("click", this.overlayProgressClick.bind(this));
+		reader.util.loadElem("#overlayProgress").addEventListener(
+			"mousemove",
+			this.overlayProgressMouseMove.bind(this)
+		);
+		reader.util.loadElem("#overlayProgress").addEventListener(
+			"click",
+			this.overlayProgressClick.bind(this)
+		);
 	}
 
 	async loadChapter(anchor) {
 		this.container.clear();
-		this.pageContainer = reader.util.createElement("div", this.container).setAttributes({ "id": "pageContainer" });
+		this.pageContainer = reader.util
+			.createElement("div", this.container)
+			.setAttributes({ "id": "pageContainer" });
 		this.position.anchor = anchor || 0;
 		this.page = 0;
 
@@ -93,7 +125,10 @@ class Renderer {
 			})
 			.join("\n");
 
-		const existing = reader.util.loadElem("#readerStyles") || reader.util.createElement("style", document.head, "").setAttributes({ "id": "readerStyles" });
+		const existing = reader.util.loadElem("#readerStyles")
+			|| reader.util
+				.createElement("style", document.head, "")
+				.setAttributes({ "id": "readerStyles" });
 		existing.innerHTML = css;
 	}
 
@@ -137,9 +172,15 @@ class Renderer {
 			"transition": "0.3s left"
 		});
 
-		const percentage = reader.util.getReadPercentage(this.book.contents, this.position.chapter, this.position.anchor);
+		const percentage = reader.util.getReadPercentage(
+			this.book.contents,
+			this.position.chapter,
+			this.position.anchor
+		);
 
-		reader.util.loadElem("#readerOverlaySmall > div").innerHTML = `${Math.round(percentage)}%&nbsp;&bull;&nbsp;${this.book.contents[this.position.chapter].title || "Untitled chapter"}`;
+		reader.util.loadElem("#readerOverlaySmall > div").innerHTML =
+			`${Math.round(percentage)}%&nbsp;&bull;&nbsp;${this.book.contents[this.position.chapter].title || "Untitled chapter"}`;
+
 		reader.util.loadElem("#overlayProgress > #progressMarker").applyStyles({
 			"width": `${percentage}%`
 		});
@@ -153,7 +194,12 @@ class Renderer {
 		return new Promise(resolve => {
 			window.setTimeout(() => {
 				this.position.anchor = this.getAnchor();
-				reader.store.setPosition(this.book.title, this.position.chapter, Math.max(this.position.anchor, 0), percentage);
+				reader.store.setPosition(
+					this.book.title,
+					this.position.chapter,
+					Math.max(this.position.anchor, 0),
+					percentage
+				);
 				resolve();
 				this.loading = false;
 			}, 300);
@@ -181,8 +227,17 @@ class Renderer {
 			this.pageContainer.style.opacity = 0;
 
 			this.position.anchor = Math.max(this.pageContainer.querySelectorAll("p").length - 1, 0);
-			const percentage = reader.util.getReadPercentage(this.book.contents, this.position.chapter, this.position.anchor);
-			reader.store.setPosition(this.book.title, this.position.chapter, this.position.anchor, percentage);
+			const percentage = reader.util.getReadPercentage(
+				this.book.contents,
+				this.position.chapter,
+				this.position.anchor
+			);
+			reader.store.setPosition(
+				this.book.title,
+				this.position.chapter,
+				this.position.anchor,
+				percentage
+			);
 
 			this.page = await this.getPageFromAnchor(this.position.anchor);
 			await this.onResize(true);
@@ -202,16 +257,26 @@ class Renderer {
 		}
 
 		const columnCount = this.getColumnCount();
-
-		if ((this.page + columnCount) / columnCount * (this.pageContainer.clientWidth + 100) >= this.pageContainer.scrollWidth - 100) {
+		const scrollPos = (this.page + columnCount) / columnCount * (this.pageContainer.clientWidth + 100);
+		
+		if (scrollPos >= this.pageContainer.scrollWidth - 100) {
 			if (this.position.chapter >= this.book.contents.length - 1) {
 				return;
 			}
 
 			this.position.chapter++;
 			await this.loadChapter();
-			const percentage = reader.util.getReadPercentage(this.book.contents, this.position.chapter, this.position.anchor);
-			reader.store.setPosition(this.book.title, this.position.chapter, this.position.anchor, percentage);
+			const percentage = reader.util.getReadPercentage(
+				this.book.contents,
+				this.position.chapter,
+				this.position.anchor
+			);
+			reader.store.setPosition(
+				this.book.title,
+				this.position.chapter,
+				this.position.anchor,
+				percentage
+			);
 			
 			return;
 		}
@@ -225,7 +290,9 @@ class Renderer {
 
 	getAnchor() {
 		const children = [...this.pageContainer.querySelectorAll("p")];
-		const offsets = children.map(c => c.offsetLeft + this.pageContainer.offsetLeft).filter(e => e >= 0);
+		const offsets = children
+			.map(c => c.offsetLeft + this.pageContainer.offsetLeft)
+			.filter(e => e >= 0);
 		const min = offsets.sort((a, b) => a - b)[0];
 
 		for (let i = 0; i < children.length; i++) {

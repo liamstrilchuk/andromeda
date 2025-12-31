@@ -32,7 +32,9 @@ class Util {
 	}
 
 	removeStylesheet(url) {
-		this.loadAllElems("link").filter(link => link.href.endsWith(url)).forEach(link => link.remove());
+		this.loadAllElems("link")
+			.filter(link => link.href.endsWith(url))
+			.forEach(link => link.remove());
 	}
 
 	setTitle(title) {

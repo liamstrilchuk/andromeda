@@ -19,11 +19,22 @@ class Interface {
 			<input style="display: none" type="file" accept=".epub" id="fileInput">
 			<div class="mainHolder">
 				<div class="navigationBar">
-					<div class="navigationBarTitle"><img src="assets/logo.png" draggable="false"><span>Andromeda</span></div>
-					<div class="navigationBarItem ${this.currentView === "library" ? "currentNavItem" : ""}" id="navLibrary">Your Library</div>
-					<div class="navigationBarItem ${this.currentView === "gutenberg" ? "currentNavItem" : ""}" id="navGutenberg">Project Gutenberg</div>
-					<div class="navigationBarItem ${this.currentView === "settings" ? "currentNavItem" : ""}" id="navSettings">Settings</div>
-					<div class="navigationBarItem ${this.currentView === "about" ? "currentNavItem" : ""}" id="navAbout">About</div>
+					<div class="navigationBarTitle">
+						<img src="assets/logo.png" draggable="false">
+						<span>Andromeda</span>
+					</div>
+					<div
+						class="navigationBarItem ${this.currentView === "library" ? "currentNavItem" : ""}"
+						id="navLibrary">Your Library</div>
+					<div
+						class="navigationBarItem ${this.currentView === "gutenberg" ? "currentNavItem" : ""}"
+						id="navGutenberg">Project Gutenberg</div>
+					<div
+						class="navigationBarItem ${this.currentView === "settings" ? "currentNavItem" : ""}"
+						id="navSettings">Settings</div>
+					<div
+						class="navigationBarItem ${this.currentView === "about" ? "currentNavItem" : ""}"
+						id="navAbout">About</div>
 				</div>
 				<div class="container"></div>
 			</div>
@@ -71,8 +82,15 @@ class Interface {
 					</div>
 				</div>
 				<div class="libraryControlsSection">
-					<button class="buttonIcon" id="libraryLayoutButton"><img src="assets/${this.libraryFormat === "grid" ? "list" : "grid"}.png" class="buttonIconImage"></button>
-					<button id="addButton"><img src="assets/plus.png" class="buttonIconImage">&nbsp;&nbsp;Add book</button>
+					<button class="buttonIcon" id="libraryLayoutButton">
+						<img
+							src="assets/${this.libraryFormat === "grid" ? "list" : "grid"}.png"
+							class="buttonIconImage">
+					</button>
+					<button id="addButton">
+						<img src="assets/plus.png" class="buttonIconImage">
+						&nbsp;&nbsp;Add book
+					</button>
 				</div>
 			</div>
 			<div class="libraryBooksHolder"></div>
@@ -122,8 +140,13 @@ class Interface {
 			let itemHTML = "";
 
 			if (this.libraryFormat === "list") {
-				const lastOpened = item.lastOpened ? new Date(item.lastOpened)
-					.toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" }) : "&mdash;";
+				const lastOpened = item.lastOpened
+					? new Date(item.lastOpened)
+						.toLocaleDateString(
+							"en-US",
+							{ year: "numeric", month: "long", day: "numeric" }
+						)
+					: "&mdash;";
 
 				itemHTML = `
 					<div class="libraryImage">
@@ -135,7 +158,9 @@ class Interface {
 					<div class="libraryProgress">${Math.round(percentage)}%</div>
 					<div class="libraryOpened"><span>${lastOpened}</span></div>
 					<div class="libraryProgressBar">
-						<div class="libraryProgressBarInside" style="width: ${Math.round(percentage * 100) / 100}%;"></div>
+						<div
+							class="libraryProgressBarInside"
+							style="width: ${Math.round(percentage * 100) / 100}%;"></div>
 					</div>
 				`;
 			} else {
@@ -147,7 +172,9 @@ class Interface {
 					<div class="libraryGridAuthor"><span>${author}</span></div>
 					<div class="libraryGridProgress"><span>${Math.round(percentage)}% complete</span></div>
 					<div class="libraryProgressBar">
-						<div class="libraryProgressBarInside" style="width: ${Math.round(percentage * 100) / 100}%;"></div>
+						<div
+							class="libraryProgressBarInside"
+							style="width: ${Math.round(percentage * 100) / 100}%;"></div>
 					</div>
 				`;
 			}
@@ -172,17 +199,25 @@ class Interface {
 				<div class="libraryItem libraryHeader">
 					<div class="libraryImage"></div>
 					<div class="libraryTitle">Title
-						${this.libraryFilter === "title" ? `<img src="assets/up-arrow.png" class="librarySortIcon icon${this.libraryDescending}">` : ""}
+						${this.libraryFilter === "title"
+							? `<img src="assets/up-arrow.png" class="librarySortIcon icon${this.libraryDescending}">`
+							: ""}
 					</div>
 					<div class="libraryAuthor">Author
-						${this.libraryFilter === "author" ? `<img src="assets/up-arrow.png" class="librarySortIcon icon${this.libraryDescending}">` : ""}
+						${this.libraryFilter === "author"
+							? `<img src="assets/up-arrow.png" class="librarySortIcon icon${this.libraryDescending}">`
+							: ""}
 					</div>
 					<div class="librarySize">Size
-						${this.libraryFilter === "size" ? `<img src="assets/up-arrow.png" class="librarySortIcon icon${this.libraryDescending}">` : ""}
+						${this.libraryFilter === "size"
+							? `<img src="assets/up-arrow.png" class="librarySortIcon icon${this.libraryDescending}">`
+							: ""}
 					</div>
 					<div class="libraryProgress">Progress</div>
 					<div class="libraryOpened">Last Opened
-						${this.libraryFilter === "last-opened" ? `<img src="assets/up-arrow.png" class="librarySortIcon icon${this.libraryDescending}">` : ""}
+						${this.libraryFilter === "last-opened"
+							? `<img src="assets/up-arrow.png" class="librarySortIcon icon${this.libraryDescending}">`
+							: ""}
 					</div>
 				</div>
 			` + allHTML;
@@ -291,17 +326,23 @@ class Interface {
 				});
 				break;
 			case "title":
-				books.sort((a, b) => this.libraryDescending ? b.title.localeCompare(a.title) : a.title.localeCompare(b.title));
+				books.sort((a, b) => this.libraryDescending
+					? b.title.localeCompare(a.title)
+					: a.title.localeCompare(b.title));
 				break;
 			case "author":
 				books.sort((a, b) => {
 					const authorA = a.attributes["Creator"] || "Unknown";
 					const authorB = b.attributes["Creator"] || "Unknown";
-					return this.libraryDescending ? authorB.localeCompare(authorA) : authorA.localeCompare(authorB);
+					return this.libraryDescending
+						? authorB.localeCompare(authorA)
+						: authorA.localeCompare(authorB);
 				});
 				break;
 			case "size":
-				books.sort((a, b) => this.libraryDescending ? b.size - a.size : a.size - b.size);
+				books.sort((a, b) => this.libraryDescending
+					? b.size - a.size
+					: a.size - b.size);
 				break;
 		}
 
@@ -320,7 +361,10 @@ class Interface {
 				<div class="libraryControlsSection">
 					<div class="librarySearchInputHolder">
 						<img src="assets/browse.png" class="librarySearchInputIcon" draggable="false">
-						<input class="librarySearchInput" placeholder="Search for title or author..." value="${search}">
+						<input
+							class="librarySearchInput"
+							placeholder="Search for title or author..."
+							value="${search}">
 					</div>
 					<button id="gutenbergSearchButton">Search</button>
 				</div>
@@ -338,13 +382,19 @@ class Interface {
 			<div class="libraryItem libraryHeader">
 				<div class="libraryImage"></div>
 				<div class="libraryTitle">Title
-					${this.libraryFilter === "title" ? `<img src="assets/up-arrow.png" class="librarySortIcon icon${this.libraryDescending}">` : ""}
+					${this.libraryFilter === "title"
+						? `<img src="assets/up-arrow.png" class="librarySortIcon icon${this.libraryDescending}">`
+						: ""}
 				</div>
 				<div class="libraryAuthor">Author
-					${this.libraryFilter === "author" ? `<img src="assets/up-arrow.png" class="librarySortIcon icon${this.libraryDescending}">` : ""}
+					${this.libraryFilter === "author"
+						? `<img src="assets/up-arrow.png" class="librarySortIcon icon${this.libraryDescending}">`
+						: ""}
 				</div>
 				<div class="librarySize">Downloads
-					${this.libraryFilter === "size" ? `<img src="assets/up-arrow.png" class="librarySortIcon icon${this.libraryDescending}">` : ""}
+					${this.libraryFilter === "size"
+						? `<img src="assets/up-arrow.png" class="librarySortIcon icon${this.libraryDescending}">`
+						: ""}
 				</div>
 			</div>
 		`;
@@ -367,7 +417,9 @@ class Interface {
 				<div class="librarySize">${item.downloads}</div>
 				<div class="librarySize"></div>
 				<div class="libraryOpened gutenbergDownloadHolder">
-					<a href="${item.url}" target="_blank"><button class="gutenbergDownload">Download</button></a>
+					<a href="${item.url}" target="_blank">
+						<button class="gutenbergDownload">Download</button>
+					</a>
 				</div>
 			`;
 		}
@@ -391,28 +443,65 @@ class Interface {
 				<div class="settingsSection">
 					<div class="settingsSectionTitle">Theme</div>
 					<div class="settingsSectionFlex">
-						<div class="settingsTheme ${isReader ? "settingsThemeSmall" : ""}" id="settingsTheme-light">Light</div>
-						<div class="settingsTheme ${isReader ? "settingsThemeSmall" : ""}" id="settingsTheme-sepia">Sepia</div>
-						<div class="settingsTheme ${isReader ? "settingsThemeSmall" : ""}" id="settingsTheme-dark">Dark</div>
-						<div class="settingsTheme ${isReader ? "settingsThemeSmall" : ""}" id="settingsTheme-night">Night</div>
-						<div class="settingsTheme ${isReader ? "settingsThemeSmall" : ""}" id="settingsTheme-aurora">Aurora</div>
+						<div
+							class="settingsTheme ${isReader ? "settingsThemeSmall" : ""}"
+							id="settingsTheme-light">Light</div>
+						<div
+							class="settingsTheme ${isReader ? "settingsThemeSmall" : ""}"
+							id="settingsTheme-sepia">Sepia</div>
+						<div
+							class="settingsTheme ${isReader ? "settingsThemeSmall" : ""}"
+							id="settingsTheme-dark">Dark</div>
+						<div
+							class="settingsTheme ${isReader ? "settingsThemeSmall" : ""}"
+							id="settingsTheme-night">Night</div>
+						<div
+							class="settingsTheme ${isReader ? "settingsThemeSmall" : ""}"
+							id="settingsTheme-aurora">Aurora</div>
 					</div>
 				</div>
 				<div class="settingsSection">
 					<div class="settingsSectionTitle">Font Size</div>
-					<input type="range" min="15" max="25" value="${fontSize}" step="1" class="settingsSlider" id="settingsFontSize">
+					<input
+						type="range"
+						min="15"
+						max="25"
+						value="${fontSize}"
+						step="1"
+						class="settingsSlider"
+						id="settingsFontSize">
 					<div class="sliderTicks" id="fontSizeTicks"></div>
-					<p id="fontSizeSample" style="font-size: ${fontSize}px;">The quick brown fox jumps over the lazy dog.</p>
+					<p id="fontSizeSample" style="font-size: ${fontSize}px;">
+						The quick brown fox jumps over the lazy dog.
+					</p>
 				</div>
 				<div class="settingsSection">
 					<div class="settingsSectionTitle">Line Height</div>
-					<input type="range" min="1.05" max="1.95" value="${lineHeight}" step="0.1" class="settingsSlider" id="settingsLineHeight">
+					<input
+						type="range"
+						min="1.05"
+						max="1.95"
+						value="${lineHeight}"
+						step="0.1"
+						class="settingsSlider"
+						id="settingsLineHeight">
 					<div class="sliderTicks" id="lineHeightTicks"></div>
-					<p style="line-height: ${lineHeight}em; max-width: 600px;" id="lineHeightSample">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin vestibulum velit et pellentesque finibus. Sed volutpat purus pulvinar, molestie sem non, mattis nulla. Pellentesque fringilla condimentum tortor at consequat. Vivamus vitae sem ultricies, viverra leo a, congue nisi.</p>
+					<p style="line-height: ${lineHeight}em; max-width: 600px;" id="lineHeightSample">
+						Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin vestibulum velit et pellentesque finibus.
+						Sed volutpat purus pulvinar, molestie sem non, mattis nulla. Pellentesque fringilla condimentum tortor at consequat.
+						Vivamus vitae sem ultricies, viverra leo a, congue nisi.
+					</p>
 				</div>
 				<div class="settingsSection">
 					<div class="settingsSectionTitle">Maximum Reader Width</div>
-					<input type="range" min="1000" max="2000" value="${maxWidth}" step="100" class="settingsSlider" id="settingsMaxWidth">
+					<input
+						type="range"
+						min="1000"
+						max="2000"
+						value="${maxWidth}"
+						step="100"
+						class="settingsSlider"
+						id="settingsMaxWidth">
 					<div class="sliderTicks" id="maxWidthTicks"></div>
 					<p id="maxWidthNum">${maxWidth} pixels</p>
 				</div>
@@ -482,8 +571,14 @@ class Interface {
 			<div class="aboutContainer">
 				<img src="assets/logo.png" class="aboutLogo" draggable="false">
 				<div class="aboutTitle">Andromeda: EPUB Reader for Chrome</div>
-				<div class="aboutText">A completely free, <a href="https://github.com/liamstrilchuk/andromeda" target="_blank">open-source</a> ebook library for Chrome.</div>
-				<div class="aboutText">Questions, comments, or suggestions? Add an issue on <a href="https://github.com/liamstrilchuk/andromeda/issues" target="_blank">this project's GitHub page</a>.</div>
+				<div class="aboutText">
+					A completely free, <a href="https://github.com/liamstrilchuk/andromeda" target="_blank">open-source</a>
+					ebook library for Chrome.
+				</div>
+				<div class="aboutText">
+					Questions, comments, or suggestions? Add an issue on
+					<a href="https://github.com/liamstrilchuk/andromeda/issues" target="_blank">this project's GitHub page</a>.
+				</div>
 				<div class="aboutText">Created by Liam Strilchuk</div>
 			</div>
 		`;
@@ -503,13 +598,21 @@ class Interface {
 		readerOverlay.innerHTML = `
 			<div id="readerOverlayTop">
 				<div id="readerOverlayTopLeft">
-					<button class="overlayButton" id="overlayButtonBack" title="Back to library"><img src="assets/back.png"></button>
+					<button class="overlayButton" id="overlayButtonBack" title="Back to library">
+						<img src="assets/back.png">
+					</button>
 				</div>
 				<div id="readerOverlayTopText"></div>
 				<div id="readerOverlayTopRight">
-					<button class="overlayButton" id="overlayButtonTOC" title="Table of contents"><img src="assets/list.png"></button>
-					<button class="overlayButton" id="overlayButtonInfo" title="Book information"><img src="assets/info2.png"></button>
-					<button class="overlayButton" id="overlayButtonSettings" title="Settings"><img src="assets/text-font.png"></button>
+					<button class="overlayButton" id="overlayButtonTOC" title="Table of contents">
+						<img src="assets/list.png">
+					</button>
+					<button class="overlayButton" id="overlayButtonInfo" title="Book information">
+						<img src="assets/info2.png">
+					</button>
+					<button class="overlayButton" id="overlayButtonSettings" title="Settings">
+						<img src="assets/text-font.png">
+					</button>
 				</div>
 			</div>
 			<div id="readerOverlayBottom">
@@ -526,12 +629,27 @@ class Interface {
 			<div id="overlayTooltip"></div>
 		`;
 
-		reader.util.loadElem("#overlayButtonBack").addEventListener("click", () => this.createLibrary());
-		reader.util.loadElem("#overlayButtonInfo").addEventListener("click", () => this.openInfoBox(reader.renderer.book.title));
-		reader.util.loadElem("#overlayButtonSettings").addEventListener("click", () => this.openSettingsBox());
-		reader.util.loadElem("#overlayButtonTOC").addEventListener("click", () => this.openTOCBox(reader.renderer.book.tableOfContents));
+		reader.util.loadElem("#overlayButtonBack").addEventListener(
+			"click",
+			() => this.createLibrary()
+		);
+		reader.util.loadElem("#overlayButtonInfo").addEventListener(
+			"click",
+			() => this.openInfoBox(reader.renderer.book.title)
+		);
+		reader.util.loadElem("#overlayButtonSettings").addEventListener(
+			"click",
+			() => this.openSettingsBox()
+		);
+		reader.util.loadElem("#overlayButtonTOC").addEventListener(
+			"click",
+			() => this.openTOCBox(reader.renderer.book.tableOfContents)
+		);
 
-		return { reader: readerElem, overlay: readerOverlay };
+		return {
+			reader: readerElem,
+			overlay: readerOverlay
+		};
 	}
 
 	loadTheme(theme) {
@@ -563,11 +681,16 @@ class Interface {
 	}
 
 	createInfoBox(html, title) {
-		reader.util.loadAllElems("#infoBoxContainer").forEach(elem => elem.remove());
-		const infoBoxContainer = reader.util.createElement("div", this.container).setAttributes({ id: "infoBoxContainer" });
-		const infoBox = reader.util.createElement("div", infoBoxContainer).setAttributes({
-			id: "infoBox"
-		});
+		reader.util.loadAllElems("#infoBoxContainer")
+			.forEach(elem => elem.remove());
+
+		const infoBoxContainer = reader.util
+			.createElement("div", this.container)
+			.setAttributes({ id: "infoBoxContainer" });
+
+		const infoBox = reader.util
+			.createElement("div", infoBoxContainer)
+			.setAttributes({ id: "infoBox" });
 
 		infoBox.innerHTML = `
 			${title ? `<div class="infoBoxItem">
@@ -577,7 +700,10 @@ class Interface {
 		`;
 
 		if (title) {
-			infoBox.querySelector("#infoBoxButtonClose").addEventListener("click", () => infoBoxContainer.remove());
+			infoBox.querySelector("#infoBoxButtonClose").addEventListener(
+				"click",
+				() => infoBoxContainer.remove()
+			);
 		}
 	}
 
@@ -612,14 +738,18 @@ class Interface {
 
 		this.createInfoBox(html, "Table of contents");
 
-		reader.util.loadAllElems(".tocElem").forEach(elem => elem.addEventListener("click", event => {
-			const chapter = reader.renderer.book.contents.find(item => item.filename === event.target.dataset.filename);
-			if (chapter) {
-				reader.renderer.position.chapter = reader.renderer.book.contents.indexOf(chapter);
-				reader.renderer.loadChapter();
-				reader.util.loadElem("#infoBoxContainer").remove();
-			}
-		}));
+		reader.util.loadAllElems(".tocElem").forEach(elem => {
+			elem.addEventListener("click", event => {
+				const chapter = reader.renderer.book.contents
+					.find(item => item.filename === event.target.dataset.filename);
+
+				if (chapter) {
+					reader.renderer.position.chapter = reader.renderer.book.contents.indexOf(chapter);
+					reader.renderer.loadChapter();
+					reader.util.loadElem("#infoBoxContainer").remove();
+				}
+			});
+		});
 	}
 
 	openSettingsBox() {
@@ -646,6 +776,9 @@ class Interface {
 			this.createLibrary();
 		});
 
-		reader.util.loadElem("#cancelDeleteButton").addEventListener("click", () => reader.util.loadElem("#infoBoxContainer").remove());
+		reader.util.loadElem("#cancelDeleteButton").addEventListener(
+			"click",
+			() => reader.util.loadElem("#infoBoxContainer").remove()
+		);
 	}
 }

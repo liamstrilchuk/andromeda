@@ -1,6 +1,6 @@
 {
 	"manifest_version": 3,
-	"name": "Andromeda",
+	"name": "Andromeda: EPUB Reader for Chrome",
 	"description": "A free, open-source EPUB reader for Chrome.",
 	"icons": {
 		"256": "assets/logo.png"
@@ -9,6 +9,6 @@
 	"background": {
 		"service_worker": "js/background.js"
 	},
-	"permissions": ["tabs", "storage", "unlimitedStorage"],
+	"permissions": ["storage", "unlimitedStorage"],
 	"action": {}
 }

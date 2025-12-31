@@ -1,10 +1,10 @@
 :root {
-	--background1: rgb(30, 30, 30);
-	--background2: rgb(40, 40, 40);
-	--background3: rgb(50, 50, 50);
-	--background4: rgb(60, 60, 60);
-	--background5: rgb(70, 70, 70);
-	--background6: rgb(80, 80, 80);
+	--background1: rgb(10, 10, 15);
+	--background2: rgb(20, 20, 25);
+	--background3: rgb(30, 30, 35);
+	--background4: rgb(40, 40, 45);
+	--background5: rgb(50, 50, 55);
+	--background6: rgb(60, 60, 65);
 
 	--text1: rgb(240, 240, 240);
 	--text2: rgb(230, 230, 230);

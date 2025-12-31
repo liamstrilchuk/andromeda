@@ -57,7 +57,8 @@ class Renderer {
 			)
 		]);
 
-		reader.util.loadElem("#readerOverlayTopText").innerHTML = `${this.book.title} &ndash; ${this.book.attributes["Creator"]}`;
+		reader.util.loadElem("#readerOverlayTopText").innerHTML =
+			`${this.book.title} &ndash; ${this.book.attributes["Creator"]}`;
 
 		reader.util.loadElem("#overlayProgress").addEventListener(
 			"mousemove",
@@ -146,9 +147,20 @@ class Renderer {
 			}
 		`;
 
+		const width = Math.min(window.innerWidth, maxWidth === "none" ? 5e3 : maxWidth);
+
 		this.container.applyStyles({
-			"width": `${Math.min(window.innerWidth, maxWidth === "none" ? 5e3 : maxWidth)}px`,
+			"width": width.toString() + "px",
 			"padding": `75px 100px`
+		});
+
+		reader.util.loadElem("#readerOverlayTop").applyStyles({
+			"width": (width - 180).toString() + "px",
+			"left": ((window.innerWidth - width) / 2 + 90).toString() + "px"
+		});
+		reader.util.loadElem("#readerOverlayBottom").applyStyles({
+			"width": (width - 180).toString() + "px",
+			"left": ((window.innerWidth - width) / 2 + 90).toString() + "px"
 		});
 
 		const left = this.page / this.getColumnCount() * (this.pageContainer.clientWidth + 100);
@@ -179,7 +191,8 @@ class Renderer {
 		);
 
 		reader.util.loadElem("#readerOverlaySmall > div").innerHTML =
-			`${Math.round(percentage)}%&nbsp;&bull;&nbsp;${this.book.contents[this.position.chapter].title || "Untitled chapter"}`;
+			`${Math.round(percentage)}%&nbsp;&bull;&nbsp;` + 
+			(this.book.contents[this.position.chapter].title || "Untitled chapter");
 
 		reader.util.loadElem("#overlayProgress > #progressMarker").applyStyles({
 			"width": `${percentage}%`

@@ -74,6 +74,7 @@ class Interface {
 
 		const container = reader.util.loadElem(".container");
 		container.innerHTML = `
+			<h1 class="sectionHeading">Your Library</h1>
 			<div class="libraryControlsHolder">
 				<div class="libraryControlsSection">
 					<div class="librarySearchInputHolder">
@@ -199,25 +200,25 @@ class Interface {
 				<div class="libraryItem libraryHeader">
 					<div class="libraryImage"></div>
 					<div class="libraryTitle">Title
-						${this.libraryFilter === "title"
-							? `<img src="assets/up-arrow.png" class="librarySortIcon icon${this.libraryDescending}">`
-							: ""}
+						<img
+							src="assets/up-arrow.png"
+							class="librarySortIcon icon${this.libraryDescending} ${this.libraryFilter === "title" ? "current" : ""}">
 					</div>
 					<div class="libraryAuthor">Author
-						${this.libraryFilter === "author"
-							? `<img src="assets/up-arrow.png" class="librarySortIcon icon${this.libraryDescending}">`
-							: ""}
+						<img
+							src="assets/up-arrow.png"
+							class="librarySortIcon icon${this.libraryDescending} ${this.libraryFilter === "author" ? "current" : ""}">
 					</div>
 					<div class="librarySize">Size
-						${this.libraryFilter === "size"
-							? `<img src="assets/up-arrow.png" class="librarySortIcon icon${this.libraryDescending}">`
-							: ""}
+						<img
+							src="assets/up-arrow.png"
+							class="librarySortIcon icon${this.libraryDescending} ${this.libraryFilter === "size" ? "current" : ""}">
 					</div>
 					<div class="libraryProgress">Progress</div>
 					<div class="libraryOpened">Last Opened
-						${this.libraryFilter === "last-opened"
-							? `<img src="assets/up-arrow.png" class="librarySortIcon icon${this.libraryDescending}">`
-							: ""}
+						<img
+							src="assets/up-arrow.png"
+							class="librarySortIcon icon${this.libraryDescending} ${this.libraryFilter === "last-opened" ? "current" : ""}">
 					</div>
 				</div>
 			` + allHTML;
@@ -357,6 +358,7 @@ class Interface {
 		const container = reader.util.loadElem(".container");
 
 		container.innerHTML = `
+			<h1 class="sectionHeading">Project Gutenberg</h1>
 			<div class="libraryControlsHolder">
 				<div class="libraryControlsSection">
 					<div class="librarySearchInputHolder">
@@ -425,7 +427,7 @@ class Interface {
 		}
 	}
 
-	async createSettings(container) {
+	async createSettings(container, isSmall=false) {
 		const isReader = this.currentView === "reader";
 		if (!container) {
 			this.currentView = "settings";
@@ -439,6 +441,7 @@ class Interface {
 		const maxWidth = await reader.store.loadSetting("maxWidth");
 
 		container.innerHTML = `
+			${isSmall ? "" : `<h1 class="sectionHeading">Settings</h1>`}
 			<div class="settingsContainer">
 				<div class="settingsSection">
 					<div class="settingsSectionTitle">Theme</div>
@@ -712,7 +715,7 @@ class Interface {
 
 		let html = `
 			<div class="infoBoxItem">
-				<span class="infoBoxItemTitle">Title</span>
+				<span class="infoBoxItemTitle small">Title</span>
 				<span>${title}</span>
 			</div>
 		`;
@@ -720,7 +723,7 @@ class Interface {
 		for (const [key, value] of Object.entries(book.attributes)) {
 			html += `
 				<div class="infoBoxItem">
-					<span class="infoBoxItemTitle">${key}</span>
+					<span class="infoBoxItemTitle small">${key}</span>
 					<span>${value}</span>
 				</div>
 			`;
@@ -757,7 +760,7 @@ class Interface {
 			<div id="settingsInfoBox"></div>
 		`, "Settings");
 
-		this.createSettings(reader.util.loadElem("#settingsInfoBox"));
+		this.createSettings(reader.util.loadElem("#settingsInfoBox"), true);
 	}
 
 	openDeleteDialog(title) {

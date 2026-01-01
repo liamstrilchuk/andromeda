@@ -74,6 +74,7 @@ class Interface {
 		reader.util.setTitle("Your Library – Andromeda");
 
 		this.resetContainer();
+		this.libraryFormat = await reader.store.loadSetting("libraryFormat");
 
 		const container = reader.util.loadElem(".container");
 		container.innerHTML = `
@@ -106,8 +107,9 @@ class Interface {
 			this.renderBooks();
 		});
 
-		reader.util.loadElem("#libraryLayoutButton").addEventListener("click", () => {
+		reader.util.loadElem("#libraryLayoutButton").addEventListener("click", async () => {
 			this.libraryFormat = this.libraryFormat === "list" ? "grid" : "list";
+			await reader.store.updateSetting("libraryFormat", this.libraryFormat);
 			this.createLibrary();
 		});
 

@@ -4,7 +4,8 @@ const defaultSettings = {
 	maxWidth: 1500,
 	lineSpacing: 1.35,
 	font: "sans-serif",
-	scrollingMode: "paginated"
+	scrollingMode: "paginated",
+	libraryFormat: "grid"
 };
 
 class Store {

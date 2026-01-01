@@ -272,11 +272,11 @@ class Renderer {
 
 	async prevPage() {
 		if (this.loading) {
-			return;
+			return false;
 		}
 
 		if (this.page <= 0 && this.position.chapter === 0) {
-			return;
+			return false;
 		}
 
 		if (this.page <= 0) {
@@ -301,17 +301,18 @@ class Renderer {
 			await this.onResize(true);
 			this.pageContainer.style.opacity = 1;
 
-			return;
+			return true;
 		}
 
 		this.page -= this.getColumnCount();
 		this.onResize();
+		return true;
 	}
 
 
 	async nextPage() {
 		if (this.loading) {
-			return;
+			return false;
 		}
 
 		const columnCount = this.getColumnCount();
@@ -319,7 +320,7 @@ class Renderer {
 		
 		if (scrollPos >= this.pageContainer.scrollWidth - 100) {
 			if (this.position.chapter >= this.book.contents.length - 1) {
-				return;
+				return false;
 			}
 
 			this.position.chapter++;
@@ -336,7 +337,7 @@ class Renderer {
 				percentage
 			);
 			
-			return;
+			return true;
 		}
 
 		this.page += columnCount;
@@ -344,6 +345,7 @@ class Renderer {
 
 		reader.store.addReadingTime(Math.min((new Date().getTime() - this.lastPageTime) / 1000, 60));
 		this.lastPageTime = new Date().getTime();
+		return true;
 	}
 
 	getAnchor() {
@@ -390,7 +392,7 @@ class Renderer {
 		this.initialLeft = -(this.page / this.getColumnCount() * (this.pageContainer.clientWidth + 100));
 	}
 
-	onMouseUp(event) {
+	async onMouseUp(event) {
 		if (!this.isMouseDown) {
 			return;
 		}
@@ -399,18 +401,20 @@ class Renderer {
 		const minScroll = Math.min(250, reader.renderer.pageContainer.clientWidth / 5);
 
 		this.pageContainer.applyStyles({
-			"transition": "0.3s left",
+			"transition": "0.3s left"
 		});
 
+		let returnToInitial = true;
+
 		if (deltaX < -minScroll) {
-			this.nextPage();
+			returnToInitial = !(await this.nextPage());
 		}
 
 		else if (deltaX > minScroll) {
-			this.prevPage();
+			returnToInitial = !(await this.prevPage());
 		}
 
-		else {
+		if (returnToInitial) {
 			this.pageContainer.applyStyles({
 				"left": `${this.initialLeft}px`
 			});

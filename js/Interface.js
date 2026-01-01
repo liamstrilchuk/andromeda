@@ -454,6 +454,7 @@ class Interface {
 		const lineHeight = await reader.store.loadSetting("lineSpacing");
 		const maxWidth = await reader.store.loadSetting("maxWidth");
 		const scrollingMode = await reader.store.loadSetting("scrollingMode");
+		const font = await reader.store.loadSetting("font");
 
 		container.innerHTML = `
 			${isSmall ? "" : `<h1 class="sectionHeading">Settings</h1>`}
@@ -488,6 +489,23 @@ class Interface {
 						<div class="settingsTextOption scrollingModeOption">
 							Continuous
 							${scrollingMode === "continuous" ? `<img class="buttonIconImage" src="assets/check.png">` : ""}
+						</div>
+					</div>
+				</div>
+				<div class="settingsSection">
+					<div class="settingsSectionTitle">Font</div>
+					<div class="settingsSectionFlex">
+						<div class="settingsTextOption fontOption">
+							Sans-serif
+							${font === "sans-serif" ? `<img class="buttonIconImage" src="assets/check.png">` : ""}
+						</div>
+						<div class="settingsTextOption fontOption">
+							Serif
+							${font === "serif" ? `<img class="buttonIconImage" src="assets/check.png">` : ""}
+						</div>
+						<div class="settingsTextOption fontOption">
+							Monospace
+							${font === "monospace" ? `<img class="buttonIconImage" src="assets/check.png">` : ""}
 						</div>
 					</div>
 				</div>
@@ -593,6 +611,17 @@ class Interface {
 		reader.util.loadAllElems(".scrollingModeOption").forEach(elem => {
 			elem.addEventListener("click", async () => {
 				await reader.store.updateSetting("scrollingMode", elem.innerText.toLowerCase());
+				this.createSettings(container, isSmall);
+				
+				if (isReader) {
+					reader.renderer.onResize(true);
+				}
+			});
+		});
+
+		reader.util.loadAllElems(".fontOption").forEach(elem => {
+			elem.addEventListener("click", async () => {
+				await reader.store.updateSetting("font", elem.innerText.toLowerCase());
 				this.createSettings(container, isSmall);
 				
 				if (isReader) {

@@ -14,6 +14,9 @@ class Interface {
 	}
 
 	resetContainer() {
+		this.container.applyStyles({
+			"height": "100%"
+		});
 		this.container.clear();
 		this.container.innerHTML = `
 			<input style="display: none" type="file" accept=".epub" id="fileInput">

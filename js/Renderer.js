@@ -45,14 +45,14 @@ class Renderer {
 		this.listeners.push([
 			null,
 			reader.inputManager.onKeys(
-				[ "ArrowLeft", "ArrowUp" ],
+				[ "ArrowLeft" ],
 				this.prevPage.bind(this)
 			)
 		]);
 		this.listeners.push([
 			null,
 			reader.inputManager.onKeys(
-				[ "ArrowRight", "ArrowDown", " " ],
+				[ "ArrowRight", " " ],
 				this.nextPage.bind(this)
 			)
 		]);
@@ -145,13 +145,10 @@ class Renderer {
 		const fontSize = await reader.store.loadSetting("fontSize");
 		const lineSpacing = await reader.store.loadSetting("lineSpacing");
 		const fontFamily = await reader.store.loadSetting("font");
+		const scrollingMode = await reader.store.loadSetting("scrollingMode");
 
 		this.readerStylesheet.innerHTML = `
-			#reader p {Inwardly, I’m still reeling.
-
-We make the short journey to Ellanher’s “office”—her dressing room, during the day and early evening—without talking. Once inside, I’m struck again by the incongruity of the space. A well-lit mirror, a dresser with vials of makeup. Feathered hats and soft fur cloaks and a rack full of wildly different dresses. It’s surreal to imagine Ellanher readying herself to sing and dance and boldly act out her lines on the same stage where she’s about to send me to get my head caved in.
-
-
+			#reader p {
 				font-size: ${fontSize}px !important;
 				line-height: ${lineSpacing}em !important;
 				font-family: ${fontFamily} !important;
@@ -185,9 +182,13 @@ We make the short journey to Ellanher’s “office”—her dressing room, duri
 		}
 
 		this.pageContainer.applyStyles({
-			"columnCount": this.getColumnCount(),
+			"columnCount": scrollingMode === "paginated" ? this.getColumnCount() : 1,
 			"left": `-${left}px`,
 			"fontSize": `${fontSize}px`
+		});
+
+		this.container.parentElement.applyStyles({
+			"height": scrollingMode === "paginated" ? "100%" : "max-content"
 		});
 
 		this.flushCSS(this.pageContainer);

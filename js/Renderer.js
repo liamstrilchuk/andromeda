@@ -14,6 +14,10 @@ class Renderer {
 		this.loading = false;
 		this.readerStylesheet = null;
 		this.lastPageTime = null;
+
+		this.mouseDownX = 0;
+		this.initialLeft = 0;
+		this.isMouseDown = false;
 	}
 
 	async load(book, position) {
@@ -33,6 +37,20 @@ class Renderer {
 			reader.inputManager.addListener(
 				"resize",
 				this.onResize.bind(this)
+			)
+		]);
+		this.listeners.push([
+			"mousedown",
+			reader.inputManager.addListener(
+				"mousedown",
+				this.onMouseDown.bind(this)
+			)
+		]);
+		this.listeners.push([
+			"mouseup",
+			reader.inputManager.addListener(
+				"mouseup",
+				this.onMouseUp.bind(this)
 			)
 		]);
 		this.listeners.push([
@@ -146,6 +164,10 @@ class Renderer {
 		const lineSpacing = await reader.store.loadSetting("lineSpacing");
 		const fontFamily = await reader.store.loadSetting("font");
 		const scrollingMode = await reader.store.loadSetting("scrollingMode");
+
+		if (scrollingMode === "continuous") {
+			this.page = 0;
+		}
 
 		this.readerStylesheet.innerHTML = `
 			#reader p {
@@ -358,7 +380,44 @@ class Renderer {
 		return left > child ? page - this.getColumnCount() : page;
 	}
 
-	onMouseMove() {
+	async onMouseDown(event) {
+		const scrollingMode = await reader.store.loadSetting("scrollingMode");
+
+		if (scrollingMode !== "continuous") {
+			this.isMouseDown = true;
+		}
+		this.mouseDownX = event.clientX;
+		this.initialLeft = -(this.page / this.getColumnCount() * (this.pageContainer.clientWidth + 100));
+	}
+
+	onMouseUp(event) {
+		if (!this.isMouseDown) {
+			return;
+		}
+		this.isMouseDown = false;
+		const deltaX = event.clientX - this.mouseDownX;
+		const minScroll = Math.min(250, reader.renderer.pageContainer.clientWidth / 5);
+
+		this.pageContainer.applyStyles({
+			"transition": "0.3s left",
+		});
+
+		if (deltaX < -minScroll) {
+			this.nextPage();
+		}
+
+		else if (deltaX > minScroll) {
+			this.prevPage();
+		}
+
+		else {
+			this.pageContainer.applyStyles({
+				"left": `${this.initialLeft}px`
+			});
+		}
+	}
+
+	onMouseMove(event) {
 		reader.util.loadElem("#readerOverlayTop").applyStyles({ "opacity": 1 });
 		reader.util.loadElem("#readerOverlayBottom").applyStyles({ "opacity": 1 });
 
@@ -367,6 +426,13 @@ class Renderer {
 			reader.util.loadElem("#readerOverlayTop").applyStyles({ "opacity": 0 });
 			reader.util.loadElem("#readerOverlayBottom").applyStyles({ "opacity": 0 });
 		}, 1500);
+
+		if (this.isMouseDown) {
+			this.pageContainer.applyStyles({
+				"left": `${this.initialLeft + event.clientX - this.mouseDownX}px`,
+				"transition": "0s"
+			});
+		}
 	}
 
 	overlayProgressMouseMove(event) {

@@ -79,7 +79,7 @@ class Interface {
 				<div class="libraryControlsSection">
 					<div class="librarySearchInputHolder">
 						<img src="assets/browse.png" class="librarySearchInputIcon" draggable="false">
-						<input class="librarySearchInput" placeholder="Search for books...">
+						<input class="librarySearchInput" placeholder="Search by title or author...">
 					</div>
 				</div>
 				<div class="libraryControlsSection">
@@ -190,7 +190,11 @@ class Interface {
 		if (library.length === 0) {
 			allHTML = `
 				<div class="libraryItem libraryEmpty">
-					<div class="libraryEmptyText">Your library is empty. Add a book to get started.</div>
+					<div class="libraryEmptyText">
+						${this.librarySearchTerm.length === 0
+							? "Your library is empty. Add a book to get started."
+							: "There are no results for that search term."}
+					</div>
 				</div>
 			`;
 		}
@@ -313,8 +317,15 @@ class Interface {
 	}
 
 	filterBooks(books) {
-		const searchTerm = this.librarySearchTerm.toLowerCase();
-		return books.filter(book => book.title.toLowerCase().includes(searchTerm));
+		const searchTerms = this.librarySearchTerm.toLowerCase().split(" ");
+
+		return books.filter(book => {
+			return searchTerms.every(term => {
+				return `${book.title} ${book.attributes["Creator"] || ""}`
+					.toLowerCase()
+					.includes(term);
+			});
+		});
 	}
 
 	sortBooks(books) {
@@ -574,6 +585,7 @@ class Interface {
 			<div class="aboutContainer">
 				<img src="assets/logo.png" class="aboutLogo" draggable="false">
 				<div class="aboutTitle">Andromeda: EPUB Reader for Chrome</div>
+				<div class="aboutSubTitle">Version ${reader.version}</div>
 				<div class="aboutText">
 					A completely free, <a href="https://github.com/liamstrilchuk/andromeda" target="_blank">open-source</a>
 					ebook library for Chrome.

@@ -1,6 +1,7 @@
 * {
 	box-sizing: border-box;
 	transition: background 0.3s;
+	scrollbar-color: var(--background2) var(--background5);
 }
 
 body {
@@ -156,6 +157,7 @@ body {
 	top: 10px;
 	width: 20px;
 	height: 20px;
+	user-select: none;
 }
 
 .librarySearchInputHolder {
@@ -358,6 +360,7 @@ body {
 	color: var(--text1);
 	margin: 5px 0 15px 0;
 	font-size: 1.8em;
+	user-select: none;
 }
 
 .buttonIconImage {
@@ -444,7 +447,7 @@ body {
 
 #readerOverlayTop, #readerOverlayBottom {
 	opacity: 0;
-	transition: 0.3s;
+	transition: 0.3s opacity;
 	z-index: 1;
 	font-size: 1.2em;
 	padding: 0 20px;
@@ -731,8 +734,11 @@ button:hover {
 }
 
 .settingsSection {
-	margin-bottom: 25px;
+	margin-bottom: 10px;
 	min-width: 500px;
+	background: var(--background3);
+	padding: 10px 15px 1px 15px;
+	border-radius: 5px;
 }
 
 .settingsSectionTitle {
@@ -819,7 +825,7 @@ button:hover {
 
 .settingsSlider::-webkit-slider-runnable-track {
 	height: 8px;
-	background: var(--background3);
+	background: var(--background4);
 	border-radius: 5px;
 }
 
@@ -837,7 +843,7 @@ button:hover {
 	border-right: 1px solid var(--text1);
 }
 
-.settingsContainer {
+#infoBox .settingsContainer {
 	padding: 10px;
 }
 
@@ -863,5 +869,10 @@ button:hover {
 	color: #e8f;
 	font-size: 2em;
 	font-weight: bold;
+	margin-bottom: 10px;
+}
+
+.aboutSubTitle {
+	color: rgb(203, 91, 223);
 	margin-bottom: 30px;
 }

@@ -9,6 +9,7 @@ class EpubReader {
 		this.loader = new Loader({});
 		this.interface = new Interface(this.container, this.inputManager);
 		this.gutenberg = new Gutenberg();
+		this.version = "1.1";
 	}
 
 	async init() {

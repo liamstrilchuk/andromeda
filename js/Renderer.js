@@ -56,6 +56,13 @@ class Renderer {
 				this.nextPage.bind(this)
 			)
 		]);
+		this.listeners.push([
+			null,
+			reader.inputManager.onKeys(
+				[ "Escape" ],
+				this.escape.bind(this)
+			)
+		]);
 
 		reader.util.loadElem("#readerOverlayTopText").innerHTML =
 			`${this.book.title} &ndash; ${this.book.attributes["Creator"]}`;
@@ -140,7 +147,11 @@ class Renderer {
 		const fontFamily = await reader.store.loadSetting("font");
 
 		this.readerStylesheet.innerHTML = `
-			#reader p {
+			#reader p {Inwardly, I’m still reeling.
+
+We make the short journey to Ellanher’s “office”—her dressing room, during the day and early evening—without talking. Once inside, I’m struck again by the incongruity of the space. A well-lit mirror, a dresser with vials of makeup. Feathered hats and soft fur cloaks and a rack full of wildly different dresses. It’s surreal to imagine Ellanher readying herself to sing and dance and boldly act out her lines on the same stage where she’s about to send me to get my head caved in.
+
+
 				font-size: ${fontSize}px !important;
 				line-height: ${lineSpacing}em !important;
 				font-family: ${fontFamily} !important;
@@ -223,6 +234,17 @@ class Renderer {
 		this.listeners.forEach(l => reader.inputManager.removeListener(l[0], l[1]));
 		window.clearTimeout(this.overlayTimeout);
 		this.listeners = [];
+	}
+
+	escape() {
+		const infobox = reader.util.loadElem("#infoBoxContainer");
+
+		if (infobox) {
+			infobox.remove();
+			return;
+		}
+
+		reader.interface.createLibrary();
 	}
 
 	async prevPage() {

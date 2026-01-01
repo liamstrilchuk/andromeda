@@ -3,7 +3,8 @@ const defaultSettings = {
 	theme: "night",
 	maxWidth: 1500,
 	lineSpacing: 1.35,
-	font: "sans-serif"
+	font: "sans-serif",
+	scrollingMode: "paginated"
 };
 
 class Store {

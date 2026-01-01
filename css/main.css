@@ -63,7 +63,7 @@ body {
 .libraryItem {
 	display: flex;
 	transition: 0.3s;
-	background: var(--background3);
+	background: var(--background4);
 	width: 100%;
 	min-width: 800px;
 	margin-top: 5px;
@@ -76,7 +76,7 @@ body {
 }
 
 .libraryItem:not(.libraryHeader):hover {
-	background: var(--background4);
+	background: var(--background5);
 	left: 10px;
 }
 
@@ -752,7 +752,7 @@ button:hover {
 	flex-wrap: wrap;
 }
 
-.settingsTheme {
+.settingsTheme, .settingsTextOption {
 	width: 200px;
 	height: 125px;
 	display: flex;
@@ -766,9 +766,21 @@ button:hover {
 	font-size: 1.1em;
 }
 
-.settingsThemeSmall {
+.settingsThemeSmall, .settingsTextOption {
 	width: 100px;
 	height: 60px;
+}
+
+.settingsTextOption {
+	background: var(--background4);
+	border: 5px solid var(--background6);
+	width: 150px;
+}
+
+.settingsTextOption img {
+	margin-left: 10px;
+	width: 15px;
+	height: 15px;
 }
 
 #settingsTheme-light {

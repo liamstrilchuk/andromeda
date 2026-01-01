@@ -450,6 +450,7 @@ class Interface {
 		const fontSize = await reader.store.loadSetting("fontSize");
 		const lineHeight = await reader.store.loadSetting("lineSpacing");
 		const maxWidth = await reader.store.loadSetting("maxWidth");
+		const scrollingMode = await reader.store.loadSetting("scrollingMode");
 
 		container.innerHTML = `
 			${isSmall ? "" : `<h1 class="sectionHeading">Settings</h1>`}
@@ -472,6 +473,19 @@ class Interface {
 						<div
 							class="settingsTheme ${isReader ? "settingsThemeSmall" : ""}"
 							id="settingsTheme-aurora">Aurora</div>
+					</div>
+				</div>
+				<div class="settingsSection">
+					<div class="settingsSectionTitle">Scrolling Mode</div>
+					<div class="settingsSectionFlex">
+						<div class="settingsTextOption scrollingModeOption">
+							Paginated
+							${scrollingMode === "paginated" ? `<img class="buttonIconImage" src="assets/check.png">` : ""}
+						</div>
+						<div class="settingsTextOption scrollingModeOption">
+							Continuous
+							${scrollingMode === "continuous" ? `<img class="buttonIconImage" src="assets/check.png">` : ""}
+						</div>
 					</div>
 				</div>
 				<div class="settingsSection">
@@ -571,6 +585,17 @@ class Interface {
 			if (isReader) {
 				reader.renderer.onResize(true);
 			}
+		});
+
+		reader.util.loadAllElems(".scrollingModeOption").forEach(elem => {
+			elem.addEventListener("click", async () => {
+				await reader.store.updateSetting("scrollingMode", elem.innerText.toLowerCase());
+				this.createSettings(container, isSmall);
+				
+				if (isReader) {
+					reader.renderer.onResize(true);
+				}
+			});
 		});
 	}
 

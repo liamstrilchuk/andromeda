@@ -24,7 +24,7 @@ class Gutenberg {
 
 			books.push({
 				title: element.title,
-				author: element.authors[0].name,
+				author: element.authors.map(author => author.name).join(", "),
 				cover: element.formats["image/jpeg"] || null,
 				url: element.formats["application/epub+zip"],
 				downloads: element.download_count

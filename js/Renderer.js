@@ -301,6 +301,7 @@ class Renderer {
 			await this.onResize(true);
 			this.pageContainer.style.opacity = 1;
 
+			window.scrollTo({ top: 0 });
 			return true;
 		}
 
@@ -336,7 +337,8 @@ class Renderer {
 				this.position.anchor,
 				percentage
 			);
-			
+
+			window.scrollTo({ top: 0 });
 			return true;
 		}
 

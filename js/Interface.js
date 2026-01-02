@@ -30,6 +30,9 @@ class Interface {
 						class="navigationBarItem ${this.currentView === "library" ? "currentNavItem" : ""}"
 						id="navLibrary">Your Library</div>
 					<div
+						class="navigationBarItem ${this.currentView === "goals" ? "currentNavItem" : ""}"
+						id="navGoals">Reading Goals</div>
+					<div
 						class="navigationBarItem ${this.currentView === "gutenberg" ? "currentNavItem" : ""}"
 						id="navGutenberg">Project Gutenberg</div>
 					<div
@@ -46,6 +49,12 @@ class Interface {
 		reader.util.loadElem("#navLibrary").addEventListener("click", () => {
 			if (this.currentView !== "library") {
 				this.createLibrary();
+			}
+		});
+
+		reader.util.loadElem("#navGoals").addEventListener("click", () => {
+			if (this.currentView !== "goals") {
+				this.createGoals();
 			}
 		});
 
@@ -120,6 +129,120 @@ class Interface {
 		addButton.addEventListener("click", () => fileInput.click());
 
 		await this.renderBooks();
+	}
+
+	async createGoals() {
+		this.currentView = "goals";
+		reader.util.setTitle("Reading Goals – Andromeda");
+
+		this.resetContainer();
+		const container = reader.util.loadElem(".container");
+		container.innerHTML = `
+			<h1 class="sectionHeading">Reading Goals</h1>
+			<div id="calendarTop">
+				<div id="calendarLeft">
+					<img src="assets/back.png" class="buttonIconImage">
+				</div>
+				<div id="calendarMonthName"></div>
+				<div id="calendarRight">
+					<img src="assets/back.png" class="buttonIconImage">
+				</div>
+			</div>
+			<div id="calendarContainer"></div>
+		`;
+
+		const data = await reader.store.getReadingStats();
+		const goal = data.goal;
+
+		const calendarContainer = reader.util.loadElem("#calendarContainer");
+		const calendarMonthName = reader.util.loadElem("#calendarMonthName");
+		const calendarLeft = reader.util.loadElem("#calendarLeft");
+		const calendarRight = reader.util.loadElem("#calendarRight");
+
+		const monthNames = [
+			"January", "February", "March", "April", "May", "June",
+			"July", "August", "September", "October", "November", "December"
+		];
+
+		const showNewMonth = (month) => {
+			calendarMonthName.innerHTML = `${monthNames[month.getMonth()]} ${month.getFullYear()}`;
+			calendarContainer.innerHTML = "";
+
+			for (let row = 0; row < 6; row++) {
+				calendarContainer.innerHTML += `
+					<div class="calendarRow"></div>
+				`;
+
+				for (let col = 0; col < 7; col++) {
+					calendarContainer.children[calendarContainer.children.length - 1].innerHTML += `
+						<div class="calendarElem"></div>
+					`;
+				}
+			}
+
+			const calendarRows = reader.util.loadAllElems(".calendarRow");
+
+			const currentDate = new Date();
+			let dayCount = 0;
+			let currentRow = 0;
+			while (true) {
+				let next = new Date(month.getFullYear(), month.getMonth(), month.getDate() + dayCount++);
+
+				if (next.getMonth() !== month.getMonth()) {
+					break;
+				}
+
+				const elem = calendarRows[currentRow].children[next.getDay()];
+				elem.classList.add("active");
+
+				if (reader.util.getDateString(currentDate) === reader.util.getDateString(next)) {
+					elem.classList.add("current");
+				}
+
+				if (next.getDay() === 6) {
+					currentRow++;
+				}
+
+				const dateString = reader.util.getDateString(next);
+				const timeSpent = data.days[dateString] || 0;
+				const percentage = timeSpent / goal;
+				const degrees = Math.min(360, Math.round(360 * percentage));
+
+				elem.innerHTML += `
+					<div class="calendarProgressOuter"></div>
+					<div class="calendarProgressInner"></div>
+				`;
+
+				elem.children[0].applyStyles({
+					"background": `conic-gradient(#f800a6 ${degrees}deg, var(--background5) 0deg)`
+				});
+
+				elem.children[1].innerHTML += `${next.getDate()}`;
+			}
+		}
+
+		let currentlyShown = new Date();
+		showNewMonth(currentlyShown);
+
+		calendarLeft.addEventListener("click", () => {
+			const newDate = new Date(currentlyShown.getFullYear(), currentlyShown.getMonth() - 1);
+
+			if (newDate < new Date(2020, 0)) {
+				return;
+			}
+			currentlyShown = newDate;
+			showNewMonth(currentlyShown);
+		});
+
+		calendarRight.addEventListener("click", () => {
+			const newDate = new Date(currentlyShown.getFullYear(), currentlyShown.getMonth() + 1);
+
+			if (newDate > new Date()) {
+				return;
+			}
+			currentlyShown = newDate;
+			showNewMonth(currentlyShown);
+		});
 	}
 
 	async renderBooks() {

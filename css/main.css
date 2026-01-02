@@ -895,3 +895,76 @@ button:hover {
 	color: rgb(203, 91, 223);
 	margin-bottom: 30px;
 }
+
+.calendarRow, #calendarTop {
+	display: flex;
+}
+
+.calendarElem {
+	width: 60px;
+	height: 60px;
+	margin: 5px;
+	border-radius: 5px;
+	padding: 10px;
+	position: relative;
+	user-select: none;
+}
+
+.calendarElem.active, .calendarElem.active .calendarProgressInner {
+	background: var(--background3);
+}
+
+.calendarElem.current, .calendarElem.current .calendarProgressInner {
+	background: var(--background4);
+}
+
+.calendarProgressOuter {
+	border-radius: 50%;
+	width: 40px;
+	height: 40px;
+}
+
+.calendarProgressInner {
+	position: absolute;
+	width: 30px;
+	height: 30px;
+	top: 15px;
+	left: 15px;
+	border-radius: 50%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+#calendarTop {
+	width: 480px;
+	margin: 5px;
+	user-select: none;
+}
+
+#calendarMonthName {
+	flex-grow: 1;
+	margin: 0 10px;
+}
+
+#calendarRight img {
+	transform: rotate(180deg);
+}
+
+#calendarTop div {
+	background: var(--background3);
+	padding: 10px;
+	border-radius: 5px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+#calendarLeft:hover, #calendarRight:hover {
+	background: var(--background4);
+}
+
+#calendarLeft, #calendarRight {
+	width: 60px;
+	cursor: pointer;
+}

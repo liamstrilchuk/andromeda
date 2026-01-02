@@ -139,16 +139,18 @@ class Interface {
 		const container = reader.util.loadElem(".container");
 		container.innerHTML = `
 			<h1 class="sectionHeading">Reading Goals</h1>
-			<div id="calendarTop">
-				<div id="calendarLeft">
-					<img src="assets/back.png" class="buttonIconImage">
+			<div id="calendar">
+				<div id="calendarTop">
+					<div id="calendarLeft" title="Show previous month">
+						<img src="assets/back.png" class="buttonIconImage">
+					</div>
+					<div id="calendarMonthName"></div>
+					<div id="calendarRight" title="Show next month">
+						<img src="assets/back.png" class="buttonIconImage">
+					</div>
 				</div>
-				<div id="calendarMonthName"></div>
-				<div id="calendarRight">
-					<img src="assets/back.png" class="buttonIconImage">
-				</div>
+				<div id="calendarContainer"></div>
 			</div>
-			<div id="calendarContainer"></div>
 		`;
 
 		const data = await reader.store.getReadingStats();
@@ -207,10 +209,15 @@ class Interface {
 				const timeSpent = data.days[dateString] || 0;
 				const percentage = timeSpent / goal;
 				const degrees = Math.min(360, Math.round(360 * percentage));
+				const minutes = Math.round(timeSpent / 60);
 
 				elem.innerHTML += `
 					<div class="calendarProgressOuter"></div>
 					<div class="calendarProgressInner"></div>
+					<div class="calendarProgressTooltip">
+						${monthNames[next.getMonth()]} ${next.getDate()}, ${next.getFullYear()}:<br>
+						${minutes} minute${minutes === 1 ? "" : "s"} read
+					</div>
 				`;
 
 				elem.children[0].applyStyles({

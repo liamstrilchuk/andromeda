@@ -968,3 +968,26 @@ button:hover {
 	width: 60px;
 	cursor: pointer;
 }
+
+.calendarProgressTooltip {
+	display: none;
+	position: absolute;
+	width: 190px;
+	text-align: center;
+	left: 70px;
+	top: 0px;
+	z-index: 2;
+	background: var(--background3);
+	border: 2px solid var(--background5);
+	padding: 10px 15px;
+	border-radius: 5px;
+	line-height: 1.6em;
+}
+
+.calendarElem:hover .calendarProgressTooltip {
+	display: initial;
+}
+
+#calendar {
+	min-width: 500px;
+}

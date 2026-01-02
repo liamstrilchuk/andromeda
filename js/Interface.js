@@ -139,6 +139,7 @@ class Interface {
 		const container = reader.util.loadElem(".container");
 		container.innerHTML = `
 			<h1 class="sectionHeading">Reading Goals</h1>
+			<h2 class="settingsSectionTitle">Time Read by Day</h2>
 			<div id="calendar">
 				<div id="calendarTop">
 					<div id="calendarLeft" title="Show previous month">
@@ -150,6 +151,7 @@ class Interface {
 					</div>
 				</div>
 				<div id="calendarContainer"></div>
+				<div id="calendarTotalTime"></div>
 			</div>
 		`;
 
@@ -158,6 +160,7 @@ class Interface {
 
 		const calendarContainer = reader.util.loadElem("#calendarContainer");
 		const calendarMonthName = reader.util.loadElem("#calendarMonthName");
+		const calendarTotalTime = reader.util.loadElem("#calendarTotalTime");
 		const calendarLeft = reader.util.loadElem("#calendarLeft");
 		const calendarRight = reader.util.loadElem("#calendarRight");
 
@@ -165,6 +168,7 @@ class Interface {
 			"January", "February", "March", "April", "May", "June",
 			"July", "August", "September", "October", "November", "December"
 		];
+		const currentDate = new Date();
 
 		const showNewMonth = (month) => {
 			calendarMonthName.innerHTML = `${monthNames[month.getMonth()]} ${month.getFullYear()}`;
@@ -184,11 +188,12 @@ class Interface {
 
 			const calendarRows = reader.util.loadAllElems(".calendarRow");
 
-			const currentDate = new Date();
 			let dayCount = 0;
 			let currentRow = 0;
+			let totalTime = 0;
+			let next;
 			while (true) {
-				let next = new Date(month.getFullYear(), month.getMonth(), month.getDate() + dayCount++);
+				next = new Date(month.getFullYear(), month.getMonth(), month.getDate() + dayCount++);
 
 				if (next.getMonth() !== month.getMonth()) {
 					break;
@@ -210,6 +215,7 @@ class Interface {
 				const percentage = timeSpent / goal;
 				const degrees = Math.min(360, Math.round(360 * percentage));
 				const minutes = Math.round(timeSpent / 60);
+				totalTime += timeSpent;
 
 				elem.innerHTML += `
 					<div class="calendarProgressOuter"></div>
@@ -226,9 +232,23 @@ class Interface {
 
 				elem.children[1].innerHTML += `${next.getDate()}`;
 			}
+
+			const hours = Math.floor(totalTime / 3600);
+			const minutes = Math.floor(totalTime / 60) % 60;
+			const seconds = Math.floor(totalTime) % 60;
+			calendarTotalTime.innerHTML = `
+				Total time spent reading:
+				<span style="color: #8e00ff;">${hours} hour${hours === 1 ? "" : "s"}</span>,
+				<span style="color: #f800a6;">${minutes} minute${minutes === 1 ? "" : "s"}</span>,
+				<span style="color: #f50083;">${seconds} second${seconds === 1 ? "" : "s"}</span>
+			`;
+
+			calendarRows
+				.filter((_, i) => i > currentRow || (i === currentRow && next.getDay() === 0))
+				.forEach(e => e.remove());
 		}
 
-		let currentlyShown = new Date();
+		let currentlyShown = new Date(currentDate.getFullYear(), currentDate.getMonth());
 		showNewMonth(currentlyShown);
 
 		calendarLeft.addEventListener("click", () => {

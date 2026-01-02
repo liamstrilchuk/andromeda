@@ -908,6 +908,11 @@ button:hover {
 	padding: 10px;
 	position: relative;
 	user-select: none;
+	background: var(--background3);
+}
+
+.calendarElem:not(.active) {
+	opacity: 0.3;
 }
 
 .calendarElem.active, .calendarElem.active .calendarProgressInner {
@@ -990,4 +995,12 @@ button:hover {
 
 #calendar {
 	min-width: 500px;
+}
+
+#calendarTotalTime {
+	margin: 5px;
+}
+
+#calendarTotalTime span {
+	font-weight: bold;
 }

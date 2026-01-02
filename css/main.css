@@ -896,7 +896,7 @@ button:hover {
 	margin-bottom: 30px;
 }
 
-.calendarRow, #calendarTop {
+.calendarRow, #calendarTop, #readingGoalButtons {
 	display: flex;
 }
 
@@ -947,7 +947,7 @@ button:hover {
 	user-select: none;
 }
 
-#calendarMonthName {
+#calendarMonthName, #rgbValue {
 	flex-grow: 1;
 	margin: 0 10px;
 }
@@ -956,7 +956,7 @@ button:hover {
 	transform: rotate(180deg);
 }
 
-#calendarTop div {
+#calendarTop div, #readingGoalButtons div {
 	background: var(--background3);
 	padding: 10px;
 	border-radius: 5px;
@@ -965,11 +965,11 @@ button:hover {
 	align-items: center;
 }
 
-#calendarLeft:hover, #calendarRight:hover {
+#calendarLeft:hover, #calendarRight:hover, #rgbLeft:hover, #rgbRight:hover {
 	background: var(--background4);
 }
 
-#calendarLeft, #calendarRight {
+#calendarLeft, #calendarRight, #rgbLeft, #rgbRight {
 	width: 60px;
 	cursor: pointer;
 }
@@ -1003,4 +1003,10 @@ button:hover {
 
 #calendarTotalTime span {
 	font-weight: bold;
+}
+
+#readingGoalButtons {
+	margin: 5px;
+	width: 340px;
+	user-select: none;
 }

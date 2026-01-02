@@ -121,6 +121,14 @@ class Store {
 		await this.set("readingStats", readingStats);
 	}
 
+	async setReadingGoal(goal) {
+		const readingStats = await this.get("readingStats");
+
+		readingStats.goal = goal;
+
+		await this.set("readingStats", readingStats);
+	}
+
 	async getReadingStats() {
 		return await this.get("readingStats");
 	}

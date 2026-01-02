@@ -153,16 +153,28 @@ class Interface {
 				<div id="calendarContainer"></div>
 				<div id="calendarTotalTime"></div>
 			</div>
+			<h2 class="settingsSectionTitle">Change Reading Goal</h2>
+			<div id="readingGoalButtons">
+				<div id="rgbLeft" title="Decrease reading goal">
+					<img src="assets/minus.png" class="buttonIconImage">
+				</div>
+				<div id="rgbValue"></div>
+				<div id="rgbRight" title="Increase reading goal">
+					<img src="assets/plus2.png" class="buttonIconImage">
+				</div>
+			</div>
 		`;
 
 		const data = await reader.store.getReadingStats();
-		const goal = data.goal;
+		let goal = data.goal;
+		const possibleGoals = [60, 300, 600, 900, 1800, 2700, 3600, 5400, 7200, 10800];
 
 		const calendarContainer = reader.util.loadElem("#calendarContainer");
 		const calendarMonthName = reader.util.loadElem("#calendarMonthName");
 		const calendarTotalTime = reader.util.loadElem("#calendarTotalTime");
 		const calendarLeft = reader.util.loadElem("#calendarLeft");
 		const calendarRight = reader.util.loadElem("#calendarRight");
+		const rgbValue = reader.util.loadElem("#rgbValue");
 
 		const monthNames = [
 			"January", "February", "March", "April", "May", "June",
@@ -270,6 +282,28 @@ class Interface {
 			currentlyShown = newDate;
 			showNewMonth(currentlyShown);
 		});
+
+		const changeGoal = async (indexAdj) => {
+			const possibleIndexes = possibleGoals
+				.filter(e => goal <= e)
+				.map(e => possibleGoals.indexOf(e));
+
+			const currentIndex = possibleIndexes.length ? possibleIndexes[0] : 0;
+
+			if (currentIndex + indexAdj >= possibleGoals.length || currentIndex + indexAdj < 0) {
+				return;
+			}
+
+			goal = possibleGoals[currentIndex + indexAdj];
+			await reader.store.setReadingGoal(goal);
+			const minutes = Math.floor(goal / 60);
+			rgbValue.innerHTML = `${minutes} minute${minutes === 1 ? "" : "s"}`;
+			showNewMonth(currentlyShown);
+		}
+
+		reader.util.loadElem("#rgbLeft").addEventListener("click", () => changeGoal(-1));
+		reader.util.loadElem("#rgbRight").addEventListener("click", () => changeGoal(1));
+		changeGoal(0);
 	}
 
 	async renderBooks() {

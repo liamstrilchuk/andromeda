@@ -1010,3 +1010,45 @@ button:hover {
 	width: 340px;
 	user-select: none;
 }
+
+.bookmarked {
+	background: rgb(77, 77, 36);
+}
+
+.bookmarkButton {
+	position: absolute;
+	top: 0;
+	left: -35px;
+	width: 30px;
+	height: 30px;
+	padding: 5px;
+	cursor: pointer;
+	display: flex;
+	border-radius: 5px;
+	user-select: none;
+	opacity: 1;
+	transition: 0.3s opacity;
+}
+
+.bookmarkButton.right {
+	left: calc(100% + 5px);
+}
+
+.bookmarkButton.none {
+	opacity: 0;
+}
+
+.bookmarkButton:hover {
+	background: var(--background3);
+}
+
+#readerOverlayLeft, #readerOverlayRight {
+	background: var(--background1);
+	position: absolute;
+	top: 0;
+	height: 100vh;
+}
+
+#readerOverlayRight {
+	right: 0;
+}

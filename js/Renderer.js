@@ -9,6 +9,7 @@ class Renderer {
 
 		this.page = 0;
 		this.listeners = [];
+		this.bookmarkedParagraphs = [];
 		this.overlayTimeout = null;
 		this.tooltipTimeout = null;
 		this.loading = false;
@@ -18,10 +19,12 @@ class Renderer {
 		this.mouseDownX = 0;
 		this.initialLeft = 0;
 		this.isMouseDown = false;
+		this.borderWidth = 0;
 	}
 
 	async load(book, position) {
 		this.book = book;
+		this.book.bookmarks = await reader.store.loadBookmarks(this.book.title);
 		this.position = position;
 		this.readerStylesheet = reader.util.createElement("style", document.head);
 		this.lastPageTime = new Date().getTime();
@@ -109,6 +112,7 @@ class Renderer {
 		this.pageContainer.innerHTML = chapter.innerHTML;
 		this.loadChapterStyles();
 		this.pageContainer.style.opacity = 0;
+		this.addBookmarkHighlights();
 
 		this.createChapterMarkers(this.book.chapterPoints);
 		await this.onResize(true);
@@ -119,6 +123,38 @@ class Renderer {
 			reader.util.loadElem("#readerLoading").hide();
 			resolve();
 			this.loading = false;
+		});
+	}
+
+	addBookmarkHighlights() {
+		const paragraphs = [...this.pageContainer.querySelectorAll("p")];
+
+		this.book.bookmarks
+			.filter(bm => bm.chapter === this.position.chapter)
+			.forEach(bm => {
+				const para = paragraphs[bm.anchor];
+				this.bookmarkedParagraphs.push(para);
+				para.classList.add("bookmarked");
+				para.applyStyles({
+					"position": "relative"
+				});
+
+				para.innerHTML += `
+					<div class="bookmarkButton">
+						<img class="buttonIconImage" src="assets/bookmarks.png">
+					</div>
+				`;
+			});
+	}
+
+	updateBookmarkPositions(change) {
+		reader.util.loadAllElems(".bookmarkButton").forEach(elem => {
+			const pos = elem.parentElement.getBoundingClientRect().x - change;
+			const side = pos > window.innerWidth / 2 ? "left" : "right";
+			const minX = this.borderWidth, maxX = window.innerWidth - this.borderWidth;
+
+			elem.classList.remove("left", "right", "none");
+			elem.classList.add(pos < minX || pos > maxX ? "none" : side);
 		});
 	}
 
@@ -193,7 +229,16 @@ class Renderer {
 			"left": ((window.innerWidth - width) / 2 + 90).toString() + "px"
 		});
 
+		this.borderWidth = (window.innerWidth - (width - 180)) / 2;
+
+		[reader.util.loadElem("#readerOverlayLeft"), reader.util.loadElem("#readerOverlayRight")]
+			.forEach(elem => elem.applyStyles({
+				"width": `${this.borderWidth}px`
+			}));
+
+		const initialLeft = -Number(this.pageContainer.style.left.split("px")[0]);
 		const left = this.page / this.getColumnCount() * (this.pageContainer.clientWidth + 100);
+		this.updateBookmarkPositions(left - initialLeft);
 
 		if (noTransition) {
 			this.pageContainer.applyStyles({

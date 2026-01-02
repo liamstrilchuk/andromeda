@@ -862,6 +862,9 @@ class Interface {
 				</div>
 				<div id="readerOverlayTopText"></div>
 				<div id="readerOverlayTopRight">
+					<button class="overlayButton" id="overlayButtonBookmarks" title="Bookmarks">
+						<img src="assets/bookmarks.png">
+					</button>
 					<button class="overlayButton" id="overlayButtonTOC" title="Table of contents">
 						<img src="assets/list.png">
 					</button>
@@ -885,6 +888,8 @@ class Interface {
 				<div id="loadingAnimation"></div>
 			</div>
 			<div id="overlayTooltip"></div>
+			<div id="readerOverlayLeft"></div>
+			<div id="readerOverlayRight"></div>
 		`;
 
 		reader.util.loadElem("#overlayButtonBack").addEventListener(
@@ -902,6 +907,10 @@ class Interface {
 		reader.util.loadElem("#overlayButtonTOC").addEventListener(
 			"click",
 			() => this.openTOCBox(reader.renderer.book.tableOfContents)
+		);
+		reader.util.loadElem("#overlayButtonBookmarks").addEventListener(
+			"click",
+			() => this.openBookmarks()
 		);
 
 		return {
@@ -963,6 +972,13 @@ class Interface {
 				() => infoBoxContainer.remove()
 			);
 		}
+	}
+
+	async openBookmarks() {
+		const title = reader.renderer.book.title;
+		const bookmarks = await reader.store.loadBookmarks(title);
+
+		this.createInfoBox("", "Bookmarks");
 	}
 
 	async openInfoBox(title) {

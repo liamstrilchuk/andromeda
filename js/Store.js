@@ -66,6 +66,23 @@ class Store {
 		await this.set("library-" + title.replaceAll(/[^\w]/g, ""), null);
 	}
 
+	async loadBookmarks(title) {
+		const bookmarks = await this.get("bookmarks");
+
+		return bookmarks[title] || [];
+	}
+
+	async addBookmark(title, chapter, anchor, annotation) {
+		const bookmarks = await this.get("bookmarks");
+
+		if (!bookmarks[title]) {
+			bookmarks[title] = [];
+		}
+
+		bookmarks[title].push({ chapter, anchor, annotation });
+		await this.set("bookmarks", bookmarks);
+	}
+
 	async loadPosition(title) {
 		const positions = await this.get("positions");
 
@@ -91,6 +108,10 @@ class Store {
 
 		if (!(await this.get("positions"))) {
 			await this.set("positions", {});
+		}
+
+		if (!(await this.get("bookmarks"))) {
+			await this.set("bookmarks", {});
 		}
 
 		if (!(await this.get("readingStats"))) {

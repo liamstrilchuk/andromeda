@@ -104,6 +104,15 @@ class Util {
 	async sleep(ms) {
 		return new Promise(resolve => setTimeout(resolve, ms));
 	}
+
+	sanitizeText(text) {
+		return text
+			.replace(/&/g, "&amp;")
+			.replace(/</g, "&lt;")
+			.replace(/>/g, "&gt;")
+			.replace(/"/g, "&quot;")
+			.replace(/'/g, "&#039;");
+	}
 }
 
 HTMLElement.prototype.setAttributes = function(attributes) {

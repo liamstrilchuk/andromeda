@@ -133,6 +133,7 @@ class Renderer {
 			.filter(bm => bm.chapter === this.position.chapter)
 			.forEach(bm => {
 				const para = paragraphs[bm.anchor];
+				const annotation = bm.annotation.length > 0;
 				this.bookmarkedParagraphs.push(para);
 				para.classList.add("bookmarked");
 				para.applyStyles({
@@ -141,7 +142,7 @@ class Renderer {
 
 				para.innerHTML += `
 					<div class="bookmarkButton">
-						<img class="buttonIconImage" src="assets/bookmarks.png">
+						<img class="buttonIconImage" src="assets/${annotation ? "note" : "bookmarks"}.png">
 					</div>
 				`;
 			});
@@ -232,9 +233,12 @@ class Renderer {
 		this.borderWidth = (window.innerWidth - (width - 180)) / 2;
 
 		[reader.util.loadElem("#readerOverlayLeft"), reader.util.loadElem("#readerOverlayRight")]
-			.forEach(elem => elem.applyStyles({
-				"width": `${this.borderWidth}px`
-			}));
+			.forEach(elem => {
+				elem.applyStyles({
+					"width": `${this.borderWidth}px`,
+					"display": scrollingMode === "continuous" ? "none" : "initial"
+				});
+			});
 
 		const initialLeft = -Number(this.pageContainer.style.left.split("px")[0]);
 		const left = this.page / this.getColumnCount() * (this.pageContainer.clientWidth + 100);

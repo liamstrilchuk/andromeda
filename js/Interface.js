@@ -976,9 +976,30 @@ class Interface {
 
 	async openBookmarks() {
 		const title = reader.renderer.book.title;
-		const bookmarks = await reader.store.loadBookmarks(title);
+		const bookmarks = (await reader.store.loadBookmarks(title))
+			.sort((a, b) => a.chapter === b.chapter ? a.anchor - b.anchor : a.chapter - b.chapter);
 
-		this.createInfoBox("", "Bookmarks");
+		let html = "";
+
+		for (const bookmark of bookmarks) {
+			const chapterName = reader.renderer.book.contents[bookmark.chapter].title || "Untitled chapter";
+
+			html += `
+				<div class="bookmarkItem">
+					<div class="bookmarkHeader">
+						<div class="bookmarkHeaderLeft">
+							<img class="buttonIconImage" src="assets/${bookmark.annotation ? "note" : "bookmarks"}.png">
+							<div class="bookmarkPosition">${chapterName}, Anchor ${bookmark.anchor}</div>
+						</div>
+						<div class="bookmarkHeaderRight">
+						</div>
+					</div>
+					<div class="bookmarkText">${reader.util.sanitizeText(bookmark.annotation)}</div>
+				</div>
+			`;
+		}
+
+		this.createInfoBox(html, "Bookmarks");
 	}
 
 	async openInfoBox(title) {

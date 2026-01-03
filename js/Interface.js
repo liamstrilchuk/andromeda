@@ -641,6 +641,7 @@ class Interface {
 		const maxWidth = await reader.store.loadSetting("maxWidth");
 		const scrollingMode = await reader.store.loadSetting("scrollingMode");
 		const font = await reader.store.loadSetting("font");
+		const disableDrag = await reader.store.loadSetting("disableDrag");
 
 		container.innerHTML = `
 			${isSmall ? "" : `<h1 class="sectionHeading">Settings</h1>`}
@@ -740,6 +741,17 @@ class Interface {
 					<div class="sliderTicks" id="maxWidthTicks"></div>
 					<p id="maxWidthNum">${maxWidth} pixels</p>
 				</div>
+				<div class="settingsSection">
+					<div class="settingsSectionTitle">Additional options</div>
+					<div class="settingsSliderContainer">
+						<div class="settingsSliderText">Disable drag to scroll</div>
+						<div>
+							<div class="settingsCheckSlider ${disableDrag ? "active" : ""}" data-prop="disableDrag">
+								<div></div>
+							</div>
+						</div>
+					</div>
+				</div>
 			</div>
 		`;
 
@@ -813,6 +825,14 @@ class Interface {
 				if (isReader) {
 					reader.renderer.onResize(true);
 				}
+			});
+		});
+
+		reader.util.loadAllElems(".settingsCheckSlider").forEach(elem => {
+			elem.addEventListener("click", () => {
+				const active = ![...elem.classList].includes("active");
+				active ? elem.classList.add("active") : elem.classList.remove("active");
+				reader.store.updateSetting(elem.dataset["prop"], active);
 			});
 		});
 	}

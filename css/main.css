@@ -1137,3 +1137,36 @@ button:hover {
 .bookmarkItem.selected {
 	background: var(--background4);
 }
+
+.settingsSliderContainer {
+	max-width: 600px;
+	margin-bottom: 10px;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+
+.settingsCheckSlider {
+	width: 60px;
+	height: 30px;
+	border-radius: 15px;
+	background: var(--background5);
+	padding: 5px;
+	cursor: pointer;
+	position: relative;
+}
+
+.settingsCheckSlider div {
+	height: 20px;
+	width: 50%;
+	border-radius: 10px;
+	background: var(--background6);
+	position: absolute;
+	transition: 0.2s;
+	left: 5px;
+}
+
+.settingsCheckSlider.active div {
+	background: #298529;
+	left: calc(50% - 5px);
+}

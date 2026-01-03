@@ -463,6 +463,7 @@ class Renderer {
 		this.isMouseDown = false;
 		const deltaX = event.clientX - this.mouseDownX;
 		const minScroll = Math.min(250, reader.renderer.pageContainer.clientWidth / 5);
+		const disableDrag = await reader.store.loadSetting("disableDrag");
 
 		this.pageContainer.applyStyles({
 			"transition": "0.3s left"
@@ -470,18 +471,20 @@ class Renderer {
 
 		let returnToInitial = true;
 
-		if (deltaX < -minScroll) {
-			returnToInitial = !(await this.nextPage());
-		}
+		if (!disableDrag) {
+			if (deltaX < -minScroll) {
+				returnToInitial = !(await this.nextPage());
+			}
 
-		else if (deltaX > minScroll) {
-			returnToInitial = !(await this.prevPage());
-		}
+			else if (deltaX > minScroll) {
+				returnToInitial = !(await this.prevPage());
+			}
 
-		if (returnToInitial) {
-			this.pageContainer.applyStyles({
-				"left": `${this.initialLeft}px`
-			});
+			if (returnToInitial) {
+				this.pageContainer.applyStyles({
+					"left": `${this.initialLeft}px`
+				});
+			}
 		}
 
 		reader.util.loadAllElems(".bookmarkTooltip").forEach(e => e.remove());
@@ -539,7 +542,9 @@ class Renderer {
 		}
 	}
 
-	onMouseMove(event) {
+	async onMouseMove(event) {
+		const disableDrag = await reader.store.loadSetting("disableDrag");
+
 		reader.util.loadElem("#readerOverlayTop").applyStyles({ "opacity": 1 });
 		reader.util.loadElem("#readerOverlayBottom").applyStyles({ "opacity": 1 });
 
@@ -549,7 +554,7 @@ class Renderer {
 			reader.util.loadElem("#readerOverlayBottom").applyStyles({ "opacity": 0 });
 		}, 1500);
 
-		if (this.isMouseDown) {
+		if (this.isMouseDown && !disableDrag) {
 			this.pageContainer.applyStyles({
 				"left": `${this.initialLeft + event.clientX - this.mouseDownX}px`,
 				"transition": "0s"

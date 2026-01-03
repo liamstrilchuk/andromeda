@@ -5,14 +5,15 @@ const defaultSettings = {
 	lineSpacing: 1.35,
 	font: "sans-serif",
 	scrollingMode: "paginated",
-	libraryFormat: "grid"
+	libraryFormat: "grid",
+	disableDrag: false
 };
 
 class Store {
 	async loadSetting(setting) {
 		const settings = await this.get("settings");
 
-		return settings[setting] || null;
+		return typeof settings[setting] === "undefined" ? null : settings[setting];
 	}
 
 	async updateSetting(setting, value) {

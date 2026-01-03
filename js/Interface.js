@@ -979,7 +979,7 @@ class Interface {
 		const bookmarks = (await reader.store.loadBookmarks(title))
 			.sort((a, b) => a.chapter === b.chapter ? a.anchor - b.anchor : a.chapter - b.chapter);
 
-		let html = "";
+		let html = bookmarks.length ? "" : `<div class="infoBoxItem">You have not added any bookmarks.</div>`;
 
 		for (const bookmark of bookmarks) {
 			const chapterName = reader.renderer.book.contents[bookmark.chapter].title || "Untitled chapter";
@@ -1019,7 +1019,7 @@ class Interface {
 			return bookmarks.find(b => b.chapter === chapter && b.anchor === anchor);
 		}
 
-		this.createInfoBox(html, "Bookmarks");
+		this.createInfoBox(html, "Bookmarks and annotations");
 
 		let isEditing = false;
 		reader.util.loadAllElems(".bookmarkEdit").forEach(elem => {
@@ -1100,6 +1100,18 @@ class Interface {
 				reader.renderer.onResize();
 			});
 		});
+	}
+
+	async goToBookmark(chapter, anchor, openEditor) {
+		await this.openBookmarks();
+
+		const elem = reader.util.loadElem(`.bookmarkItem[data-bid="${chapter}-${anchor}"]`);
+		elem.parentElement.scrollTo({ y: elem.scrollTop });
+		elem.classList.add("selected");
+
+		if (openEditor) {
+			elem.querySelector(".bookmarkEdit").click();
+		}
 	}
 
 	async openInfoBox(title) {

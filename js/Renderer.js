@@ -482,6 +482,63 @@ class Renderer {
 				"left": `${this.initialLeft}px`
 			});
 		}
+
+		reader.util.loadAllElems(".bookmarkTooltip").forEach(e => e.remove());
+		reader.util.loadAllElems("#reader p.selected")
+			.forEach(e => e.classList.remove("selected"));
+
+		const target = event.target;
+		if (Math.abs(deltaX) < 5 && target && target.tagName.toLowerCase() === "p") {
+			const classes = [...target.classList];
+			const paragraphs = [...this.pageContainer.querySelectorAll("p")];
+
+			if (classes.includes("bookmarked")) {
+				reader.interface.goToBookmark(this.position.chapter, paragraphs.indexOf(target), false);
+			}
+
+			if (!classes.includes("bookmarked") && !classes.includes("selected")) {
+				target.classList.add("selected");
+
+				const tooltip = reader.util.createElement("div", document.body, "bookmarkTooltip");
+				tooltip.innerHTML = `
+					<div id="addAnnotation" title="Add an annotation">
+						<img src="assets/note.png" class="buttonIconImage">
+					</div>
+					<div id="addBookmark" title="Add a bookmark">
+						<img src="assets/bookmarks.png" class="buttonIconImage">
+					</div>
+				`;
+				tooltip.applyStyles({
+					"left": `${event.clientX - 50}px`,
+					"top": `${event.clientY - 70}px`
+				});
+
+				const addBookmark = async (go) => {
+					const anchor = paragraphs.indexOf(target);
+
+					await reader.store.addBookmark(this.book.title, this.position.chapter, anchor, "");
+					this.addBookmarkHighlights();
+					this.isMouseDown = false;
+					target.classList.remove("selected");
+
+					if (go) {
+						reader.interface.goToBookmark(this.position.chapter, anchor, true);
+					}
+				};
+
+				reader.util.loadElem("#addAnnotation").addEventListener("mouseup", event => {
+					addBookmark(true);
+					tooltip.remove();
+					event.stopPropagation();
+				});
+
+				reader.util.loadElem("#addBookmark").addEventListener("mouseup", event => {
+					addBookmark(false);
+					tooltip.remove();
+					event.stopPropagation();
+				});
+			}
+		}
 	}
 
 	onMouseMove(event) {

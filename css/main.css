@@ -534,7 +534,7 @@ button:hover {
 	overflow: auto;
 	padding: 10px;
 	background: var(--background2);
-	border: 1px solid var(--background6);
+	border: 2px solid var(--background6);
 	color: var(--text2);
 }
 
@@ -1012,11 +1012,11 @@ button:hover {
 }
 
 #reader .bookmarked {
-	background: rgb(77, 77, 36);
+	background: var(--highlight1);
 }
 
 #reader .selected {
-	background: rgba(77, 77, 36, 0.5);
+	background: var(--highlight2);
 	transition: background 0.1s;
 }
 
@@ -1027,7 +1027,6 @@ button:hover {
 	width: 30px;
 	height: 30px;
 	padding: 5px;
-	cursor: pointer;
 	display: flex;
 	border-radius: 5px;
 	user-select: none;
@@ -1041,10 +1040,6 @@ button:hover {
 
 .bookmarkButton.none {
 	opacity: 0;
-}
-
-.bookmarkButton:hover {
-	background: var(--background3);
 }
 
 #readerOverlayLeft, #readerOverlayRight {
@@ -1097,7 +1092,7 @@ button:hover {
 }
 
 .bookmarkControl:hover {
-	background: var(--background4);
+	background: var(--background5);
 }
 
 #goToBookmark {

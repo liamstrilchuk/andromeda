@@ -447,8 +447,9 @@ class Renderer {
 
 	async onMouseDown(event) {
 		const scrollingMode = await reader.store.loadSetting("scrollingMode");
+		const infobox = reader.util.loadElem("#infoBoxContainer");
 
-		if (scrollingMode !== "continuous") {
+		if (scrollingMode !== "continuous" && !infobox) {
 			this.isMouseDown = true;
 		}
 		this.mouseDownX = event.clientX;
@@ -513,7 +514,7 @@ class Renderer {
 					"top": `${event.clientY - 70}px`
 				});
 
-				const addBookmark = async (go) => {
+				const addBookmark = async (go, event) => {
 					const anchor = paragraphs.indexOf(target);
 
 					await reader.store.addBookmark(this.book.title, this.position.chapter, anchor, "");
@@ -524,19 +525,16 @@ class Renderer {
 					if (go) {
 						reader.interface.goToBookmark(this.position.chapter, anchor, true);
 					}
+
+					tooltip.remove();
+					event.stopPropagation();
 				};
 
-				reader.util.loadElem("#addAnnotation").addEventListener("mouseup", event => {
-					addBookmark(true);
-					tooltip.remove();
-					event.stopPropagation();
-				});
+				reader.util.loadElem("#addAnnotation")
+					.addEventListener("mouseup", event => addBookmark(true, event));
 
-				reader.util.loadElem("#addBookmark").addEventListener("mouseup", event => {
-					addBookmark(false);
-					tooltip.remove();
-					event.stopPropagation();
-				});
+				reader.util.loadElem("#addBookmark")
+					.addEventListener("mouseup", event => addBookmark(false, event));
 			}
 		}
 	}

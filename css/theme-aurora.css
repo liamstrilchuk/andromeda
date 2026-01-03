@@ -11,6 +11,9 @@
 	--text3: rgb(200, 200, 200);
 
 	--border1: rgb(200, 200, 200);
+
+	--highlight1: rgb(77, 77, 36);
+	--highlight2: rgba(77, 77, 36, 0.5);
 }
 
 .libraryElemInfo, .libraryElemDelete, .librarySearchInputIcon, .librarySortIcon, .buttonIconImage, #infoBox img, .overlayButton img {

@@ -11,6 +11,9 @@
 	--text3: rgb(85, 85, 85);
 
 	--border1: rgb(55, 55, 55);
+
+	--highlight1: rgb(224, 224, 96);
+	--highlight2: rgba(224, 224, 96, 0.5);
 }
 
 #loadingAnimation:after {

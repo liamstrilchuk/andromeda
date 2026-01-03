@@ -983,23 +983,123 @@ class Interface {
 
 		for (const bookmark of bookmarks) {
 			const chapterName = reader.renderer.book.contents[bookmark.chapter].title || "Untitled chapter";
+			const bookmarkId = `${bookmark.chapter}-${bookmark.anchor}`;
 
 			html += `
-				<div class="bookmarkItem">
+				<div class="bookmarkItem" data-bid="${bookmarkId}">
 					<div class="bookmarkHeader">
 						<div class="bookmarkHeaderLeft">
-							<img class="buttonIconImage" src="assets/${bookmark.annotation ? "note" : "bookmarks"}.png">
+							<img
+								class="buttonIconImage"
+								src="assets/${bookmark.annotation ? "note" : "bookmarks"}.png">
 							<div class="bookmarkPosition">${chapterName}, Anchor ${bookmark.anchor}</div>
 						</div>
 						<div class="bookmarkHeaderRight">
+							<div class="bookmarkControl bookmarkEdit" title="Edit annotation" data-bid="${bookmarkId}">
+								<img class="buttonIconImage" src="assets/edit.png">
+							</div>
+							<div class="bookmarkControl bookmarkDelete" title="Delete bookmark" data-bid="${bookmarkId}">
+								<img class="buttonIconImage" src="assets/trash.png">
+							</div>
+							<div class="bookmarkControl bookmarkGo" title="Go to position" data-bid="${bookmarkId}">
+								<img class="buttonIconImage" id="goToBookmark" src="assets/up-arrow.png">
+							</div>
 						</div>
 					</div>
-					<div class="bookmarkText">${reader.util.sanitizeText(bookmark.annotation)}</div>
+					<div class="bookmarkText ${bookmark.annotation ? "" : "empty"}">
+						${reader.util.sanitizeText(bookmark.annotation).replaceAll("\n", "<br>")}
+					</div>
 				</div>
 			`;
 		}
 
+		const getBookmarkById = (id) => {
+			const [ chapter, anchor ] = id.split("-").map(e => Number(e));
+
+			return bookmarks.find(b => b.chapter === chapter && b.anchor === anchor);
+		}
+
 		this.createInfoBox(html, "Bookmarks");
+
+		let isEditing = false;
+		reader.util.loadAllElems(".bookmarkEdit").forEach(elem => {
+			const bookmark = getBookmarkById(elem.dataset["bid"]);
+
+			elem.addEventListener("click", () => {
+				if (isEditing) {
+					return;
+				}
+				isEditing = true;
+				const timeOpened = new Date().getTime();
+				const textContainer = reader.util
+					.loadElem(`.bookmarkItem[data-bid="${elem.dataset["bid"]}"] .bookmarkText`);
+
+				textContainer.innerHTML = `<textarea placeholder="Enter an annotation..."></textarea>`;
+				const textarea = textContainer.querySelector("textarea");
+				textarea.value = reader.util.sanitizeText(bookmark.annotation);
+				textarea.focus();
+
+				const clickListenerFunc = () => {
+					if (new Date().getTime() - timeOpened > 100) {
+						doneEditing();
+					}
+				};
+
+				window.addEventListener("click", clickListenerFunc);
+
+				const doneEditing = async () => {
+					window.removeEventListener("click", clickListenerFunc);
+					const newValue = reader.util
+						.sanitizeText(textarea.value.trim());
+					await reader.store.addBookmark(
+						reader.renderer.book.title,
+						bookmark.chapter, bookmark.anchor,
+						newValue
+					);
+					this.openBookmarks();
+					reader.renderer.addBookmarkHighlights();
+				}
+
+				textarea.addEventListener("keydown", event => {
+					if (event.key.toLowerCase() === "escape" ||
+						(event.key.toLowerCase() === "enter" && !event.shiftKey)) {
+						doneEditing();
+						event.preventDefault();
+					}
+
+					event.stopPropagation();
+				});
+
+				textarea.addEventListener("click", e => e.stopPropagation());
+			});
+		});
+
+		reader.util.loadAllElems(".bookmarkDelete").forEach(elem => {
+			const bookmark = getBookmarkById(elem.dataset["bid"]);
+
+			elem.addEventListener("click", async () => {
+				await reader.store.removeBookmark(
+					reader.renderer.book.title,
+					bookmark.chapter, bookmark.anchor
+				);
+				this.openBookmarks();
+				reader.renderer.addBookmarkHighlights();
+			});
+		});
+
+		reader.util.loadAllElems(".bookmarkGo").forEach(elem => {
+			const bookmark = getBookmarkById(elem.dataset["bid"]);
+
+			elem.addEventListener("click", async () => {
+				reader.util.loadAllElems("#infoBoxContainer")
+					.forEach(elem => elem.remove());
+
+				reader.renderer.position.chapter = bookmark.chapter;
+				await reader.renderer.loadChapter(bookmark.anchor);
+				reader.renderer.page = await reader.renderer.getPageFromAnchor(bookmark.anchor);
+				reader.renderer.onResize();
+			});
+		});
 	}
 
 	async openInfoBox(title) {

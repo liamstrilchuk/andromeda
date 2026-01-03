@@ -79,7 +79,33 @@ class Store {
 			bookmarks[title] = [];
 		}
 
-		bookmarks[title].push({ chapter, anchor, annotation });
+		let alreadyExists = false;
+		for (const bookmark of bookmarks[title]) {
+			if (bookmark.chapter === chapter && bookmark.anchor === anchor) {
+				alreadyExists = true;
+				bookmark.annotation = annotation;
+			}
+		}
+
+		if (!alreadyExists) {
+			bookmarks[title].push({ chapter, anchor, annotation });
+		}
+		await this.set("bookmarks", bookmarks);
+	}
+
+	async removeBookmark(title, chapter, anchor) {
+		const bookmarks = await this.get("bookmarks");
+
+		if (!bookmarks[title]) {
+			return;
+		}
+
+		for (let i = bookmarks[title].length - 1; i > -1; i--) {
+			if (bookmarks[title][i].chapter === chapter && bookmarks[title][i].anchor === anchor) {
+				bookmarks[title].splice(i, 1);
+			}
+		}
+
 		await this.set("bookmarks", bookmarks);
 	}
 

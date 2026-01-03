@@ -24,7 +24,6 @@ class Renderer {
 
 	async load(book, position) {
 		this.book = book;
-		this.book.bookmarks = await reader.store.loadBookmarks(this.book.title);
 		this.position = position;
 		this.readerStylesheet = reader.util.createElement("style", document.head);
 		this.lastPageTime = new Date().getTime();
@@ -126,8 +125,16 @@ class Renderer {
 		});
 	}
 
-	addBookmarkHighlights() {
+	async addBookmarkHighlights() {
+		this.book.bookmarks = await reader.store.loadBookmarks(this.book.title);
+
 		const paragraphs = [...this.pageContainer.querySelectorAll("p")];
+
+		reader.util.loadAllElems(".bookmarked").forEach(elem => {
+			elem.classList.remove("bookmarked");
+		});
+
+		reader.util.loadAllElems(".bookmarkButton").forEach(elem => elem.remove());
 
 		this.book.bookmarks
 			.filter(bm => bm.chapter === this.position.chapter)
@@ -146,6 +153,8 @@ class Renderer {
 					</div>
 				`;
 			});
+
+		this.updateBookmarkPositions(0);
 	}
 
 	updateBookmarkPositions(change) {
@@ -309,6 +318,9 @@ class Renderer {
 	}
 
 	escape() {
+		if (document.activeElement.tagName.toLowerCase() === "textarea") {
+			return;
+		}
 		const infobox = reader.util.loadElem("#infoBoxContainer");
 
 		if (infobox) {

@@ -558,7 +558,7 @@ button:hover {
 	font-size: 1.3em;
 }
 
-#infoBox img {
+#infoBox img:not(.bookmarkItem img) {
 	width: 18px;
 }
 
@@ -1060,6 +1060,10 @@ button:hover {
 	margin-top: 10px;
 }
 
+.bookmarkHeader {
+	justify-content: space-between;
+}
+
 .bookmarkHeader, .bookmarkHeader div {
 	display: flex;
 	align-items: center;
@@ -1072,4 +1076,37 @@ button:hover {
 
 .bookmarkText {
 	padding: 10px 0 0 30px;
+	user-select: text;
+}
+
+.bookmarkText.empty:not(:has(textarea)) {
+	padding: 0;
+}
+
+.bookmarkControl {
+	width: 30px;
+	height: 30px;
+	padding: 5px;
+	border-radius: 5px;
+	cursor: pointer;
+}
+
+.bookmarkControl:hover {
+	background: var(--background4);
+}
+
+#goToBookmark {
+	transform: rotate(90deg);
+}
+
+.bookmarkItem textarea {
+	background: var(--background4);
+	border: 2px solid var(--background6);
+	color: var(--text1);
+	padding: 10px;
+	border-radius: 5px;
+	height: 100px;
+	width: 100%;
+	outline: none !important;
+	resize: none;
 }

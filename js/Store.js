@@ -6,7 +6,8 @@ const defaultSettings = {
 	font: "sans-serif",
 	scrollingMode: "paginated",
 	libraryFormat: "grid",
-	disableDrag: false
+	disableDrag: false,
+	disableStylesheets: false
 };
 
 class Store {

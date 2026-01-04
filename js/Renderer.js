@@ -177,7 +177,7 @@ class Renderer {
 		});
 	}
 
-	loadChapterStyles() {
+	loadChapterStyles(remove=false) {
 		const stylesheets = this.book.contents[this.position.chapter].stylesheets;
 
 		const css = stylesheets
@@ -201,7 +201,13 @@ class Renderer {
 			|| reader.util
 				.createElement("style", document.head, "")
 				.setAttributes({ "id": "readerStyles" });
-		existing.innerHTML = css;
+		existing.innerHTML = remove ? "" : css;
+	}
+
+	async onSettingChange() {
+		const disableStylesheets = await reader.store.loadSetting("disableStylesheets");
+
+		this.loadChapterStyles(disableStylesheets);
 	}
 
 	async onResize(noTransition) {
@@ -456,6 +462,17 @@ class Renderer {
 		this.initialLeft = -(this.page / this.getColumnCount() * (this.pageContainer.clientWidth + 100));
 	}
 
+	hasParagraphParent(elem) {
+		do {
+			if (elem.tagName.toLowerCase() === "p") {
+				return elem;
+			}
+			elem = elem.parentElement;
+		} while (elem);
+
+		return false;
+	}
+
 	async onMouseUp(event) {
 		if (!this.isMouseDown) {
 			return;
@@ -491,8 +508,8 @@ class Renderer {
 		reader.util.loadAllElems("#reader p.selected")
 			.forEach(e => e.classList.remove("selected"));
 
-		const target = event.target;
-		if (Math.abs(deltaX) < 5 && target && target.tagName.toLowerCase() === "p") {
+		const target = this.hasParagraphParent(event.target);
+		if (Math.abs(deltaX) < 5 && target) {
 			const classes = [...target.classList];
 			const paragraphs = [...this.pageContainer.querySelectorAll("p")];
 

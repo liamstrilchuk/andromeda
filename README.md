@@ -3,6 +3,8 @@
 Andromeda is an extension for Chrome that allows you to read and manage EPUB files in your browser. Some of its features include:
 
 * A clean, distraction-free reading interface
+* Add bookmarks and annotations
+* Keep track of how much time you spend reading and set reading goals
 * Integration with Project Gutenberg's library of free EPUB books
 * Five different color themes to choose from
 * A built-in library to manage your EPUB files

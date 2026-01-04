@@ -81,6 +81,7 @@ class Interface {
 		this.currentView = "library";
 		reader.renderer.close();
 		reader.util.setTitle("Your Library – Andromeda");
+		reader.util.loadAllElems(".bookmarkTooltip").forEach(e => e.remove());
 
 		this.resetContainer();
 		this.libraryFormat = await reader.store.loadSetting("libraryFormat");
@@ -642,6 +643,7 @@ class Interface {
 		const scrollingMode = await reader.store.loadSetting("scrollingMode");
 		const font = await reader.store.loadSetting("font");
 		const disableDrag = await reader.store.loadSetting("disableDrag");
+		const disableStylesheets = await reader.store.loadSetting("disableStylesheets");
 
 		container.innerHTML = `
 			${isSmall ? "" : `<h1 class="sectionHeading">Settings</h1>`}
@@ -751,6 +753,14 @@ class Interface {
 							</div>
 						</div>
 					</div>
+					<div class="settingsSliderContainer">
+						<div class="settingsSliderText">Disable custom book styles</div>
+						<div>
+							<div class="settingsCheckSlider ${disableStylesheets ? "active" : ""}" data-prop="disableStylesheets">
+								<div></div>
+							</div>
+						</div>
+					</div>
 				</div>
 			</div>
 		`;
@@ -829,10 +839,14 @@ class Interface {
 		});
 
 		reader.util.loadAllElems(".settingsCheckSlider").forEach(elem => {
-			elem.addEventListener("click", () => {
+			elem.addEventListener("click", async () => {
 				const active = ![...elem.classList].includes("active");
 				active ? elem.classList.add("active") : elem.classList.remove("active");
-				reader.store.updateSetting(elem.dataset["prop"], active);
+				await reader.store.updateSetting(elem.dataset["prop"], active);
+
+				if (isReader) {
+					reader.renderer.onSettingChange();
+				}
 			});
 		});
 	}

@@ -281,15 +281,11 @@ body {
 }
 
 .contextMenuDelete {
-	background: rgb(100, 50, 50);
+	background: var(--red-bg);
 }
 
-.contextMenuItem:hover {
+.contextMenuItem:not(.contextMenuDelete):hover {
 	background: var(--background3);
-}
-
-.contextMenuDelete:hover {
-	background: rgb(150, 50, 50);
 }
 
 .mainHolder {

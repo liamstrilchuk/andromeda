@@ -14,6 +14,8 @@
 
 	--highlight1: rgb(224, 224, 96);
 	--highlight2: rgba(224, 224, 96, 0.5);
+
+	--red-bg: rgb(211, 78, 78);
 }
 
 #loadingAnimation:after {
